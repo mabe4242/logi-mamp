@@ -7,6 +7,7 @@
 @section('content')
 <div class="login-form__content">
     <form class="form" action="/login" method="post">
+        <input type="hidden" name="role" value="user"> 
         @csrf
         <div class="login-form__heading">
             <h2>ログイン</h2>
