@@ -4,9 +4,8 @@
     <link rel="stylesheet" href="{{ asset('css/user/verify.css') }}">
 @endsection
 
-<x-auth_header></x-auth_header>
-
 @section('content')
+    <x-auth_header></x-auth_header>
     <div class="verify-notice">
         <div class="verify-notice__parts">
             <p>登録していただいたメールアドレスに認証メールを送付しました。<br/>メール認証を完了してください。</p>
