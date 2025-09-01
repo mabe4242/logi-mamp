@@ -4,6 +4,8 @@
     <link rel="stylesheet" href="{{ asset('css/admin/login.css') }}">
 @endsection
 
+<x-auth_header></x-auth_header>
+
 @section('content')
 <div class="login-form__content">
     <form class="form" action="{{ route('admin.login') }}" method="post">

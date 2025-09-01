@@ -4,6 +4,8 @@
     <link rel="stylesheet" href="{{ asset('css/user/login.css') }}">
 @endsection
 
+<x-auth_header></x-auth_header>
+
 @section('content')
 <div class="login-form__content">
     <form class="form" action="/login" method="post">

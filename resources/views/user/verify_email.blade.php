@@ -4,6 +4,8 @@
     <link rel="stylesheet" href="{{ asset('css/user/verify.css') }}">
 @endsection
 
+<x-auth_header></x-auth_header>
+
 @section('content')
     <div class="verify-notice">
         <div class="verify-notice__parts">

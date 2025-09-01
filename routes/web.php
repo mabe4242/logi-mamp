@@ -5,12 +5,12 @@ use App\Http\Controllers\Admin\AttendanceController as AdminAttendanceController
 use App\Http\Controllers\Admin\LoginController;
 use Illuminate\Support\Facades\Route;
 
-// ユーザー用
+// ユーザー認証
 Route::middleware(['auth:web'])->group(function () {
     Route::get('/attendance', [UserAttendanceController::class, 'create']);
 });
 
-// 管理者用
+// 管理者認証
 Route::prefix('admin')->group(function () {
     Route::get('/login', [LoginController::class, 'create'])->name('admin.loginForm');
     Route::post('/login', [LoginController::class, 'login'])->name('admin.login');

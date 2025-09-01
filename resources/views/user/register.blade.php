@@ -4,6 +4,8 @@
     <link rel="stylesheet" href="{{ asset('css/user/register.css') }}">
 @endsection
 
+<x-auth_header></x-auth_header>
+
 @section('content')
 <div class="register-form__content">
     <form class="form" action="/register" method="post">

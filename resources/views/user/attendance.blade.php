@@ -1,28 +1,11 @@
-こちらは一般ユーザーです。
+@extends('layouts.app')
 
-<form class="form" action="/logout" method="post">
-    @csrf
-    <button class="header-nav__button btn">ログアウト</button>
-</form>
+{{-- @section('css')
+    <link rel="stylesheet" href="{{ asset('css/user/login.css') }}">
+@endsection --}}
 
-                <nav>
-                    <ul class="header-nav">
-                        @if (Auth::check())
-                        <li class="header-nav__item">
-                            <form class="form" action="/logout" method="post">
-                                @csrf
-                                <button class="header-nav__button btn">ログアウト</button>
-                            </form>
-                        </li>
-                        @else 
-                        <li class="header-nav__item">
-                            <form class="form" action="/login">
-                                <button class="header-nav__button btn">ログイン</button>
-                            </form>
-                        </li>
-                        @endif
-                        <li class="header-nav__item">
-                            <a class="header-nav__link btn" href="">マイページ</a>
-                        </li>
-                    </ul>
-                </nav>
+<x-user_header></x-user_header>
+
+@section('content')
+    こちらは一般ユーザーの画面です。
+@endsection
