@@ -1,0 +1,29 @@
+.attendance__content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0eff2;
+    height: 100vh;
+}
+
+.attendance__wrappper {
+    width: 100%;
+    text-align: center;
+    max-width: 600px;
+}
+
+.attendance__content {
+    font-weight: bold;
+    font-size: 1.8em;
+    color: #000000;
+    border-left: 8px solid #000000;
+    text-align: left;
+}
+
+.arrow__left {
+
+}
+
+.arrow__right {
+    transform: rotate(180deg);
+}
