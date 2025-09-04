@@ -94,9 +94,9 @@ class AttendanceController extends Controller
         $user = Auth::user();
 
         // リクエストされた月を取得
-        $month = $request->query('month', Carbon::now()->format('Y-m'));
-        $startOfMonth = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
-        $endOfMonth   = Carbon::createFromFormat('Y-m', $month)->endOfMonth();
+        $month = $request->query('month', Carbon::now()->format('Y/m'));
+        $startOfMonth = Carbon::createFromFormat('Y/m', $month)->startOfMonth();
+        $endOfMonth   = Carbon::createFromFormat('Y/m', $month)->endOfMonth();
 
         // 勤怠データを取得 (→ここはモデルにスコープで切り出そう！)
         $attendanceRecords = Attendance::with('breaks')
@@ -163,12 +163,12 @@ class AttendanceController extends Controller
         }
 
         // クエリパラメータから表示月を取得（デフォルトは今月）
-        $currentMonth = $request->query('month', now()->format('Y-m'));
-        $carbonMonth = Carbon::createFromFormat('Y-m', $currentMonth);
+        $currentMonth = $request->query('month', now()->format('Y/m'));
+        $carbonMonth = Carbon::createFromFormat('Y/m', $currentMonth);
 
         // 前月・翌月の値
-        $prevMonth = $carbonMonth->copy()->subMonth()->format('Y-m');
-        $nextMonth = $carbonMonth->copy()->addMonth()->format('Y-m');
+        $prevMonth = $carbonMonth->copy()->subMonth()->format('Y/m');
+        $nextMonth = $carbonMonth->copy()->addMonth()->format('Y/m');
 
         // それぞれのルートURLを生成
         $prevMonthUrl = route('attendance.index', ['month' => $prevMonth]);
