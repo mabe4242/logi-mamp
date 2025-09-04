@@ -25,7 +25,7 @@ class AttendanceController extends Controller
         return view('user.attendance', compact('attendance'));
     }
 
-    public function store(Request $request)
+    public function store()
     {
         $userId = Auth::id();
         $now    = now();
@@ -57,7 +57,7 @@ class AttendanceController extends Controller
         });
     }
 
-    public function checkout(Request $request)
+    public function checkout()
     {
         $userId = Auth::id();
         $now    = now();
@@ -93,12 +93,12 @@ class AttendanceController extends Controller
     {
         $user = Auth::user();
 
-        // リクエストされた月 (例: "2025-09")
+        // リクエストされた月を取得
         $month = $request->query('month', Carbon::now()->format('Y-m'));
         $startOfMonth = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
         $endOfMonth   = Carbon::createFromFormat('Y-m', $month)->endOfMonth();
 
-        // 勤怠データをまとめて取得
+        // 勤怠データを取得 (→ここはモデルにスコープで切り出そう！)
         $attendanceRecords = Attendance::with('breaks')
             ->where('user_id', $user->id)
             ->whereBetween('date', [$startOfMonth, $endOfMonth])
@@ -107,9 +107,8 @@ class AttendanceController extends Controller
                 return [Carbon::parse($item->date)->toDateString() => $item];
             });
 
+        // 月の日付を1日ずつループして、ログインユーザーの指定された月の勤怠データをまとめる
         $attendances = collect();
-
-        // 月の日付を 1 日ずつループ
         $currentDate = $startOfMonth->copy();
         while ($currentDate->lte($endOfMonth)) {
             $record = $attendanceRecords->get($currentDate->toDateString());
@@ -147,7 +146,7 @@ class AttendanceController extends Controller
                         : '',
                 ]);
             } else {
-                // 出勤記録なし → 空で表示させる。
+                // 出勤記録なし → 空で表示させる。 (→ここって最初の$attendances = collect()でいけないのかな？)
                 $attendances->push((object)[
                     'id' => null,
                     'date' => $currentDate->toDateString(),
@@ -165,7 +164,7 @@ class AttendanceController extends Controller
 
         // クエリパラメータから表示月を取得（デフォルトは今月）
         $currentMonth = $request->query('month', now()->format('Y-m'));
-        $carbonMonth = \Carbon\Carbon::createFromFormat('Y-m', $currentMonth);
+        $carbonMonth = Carbon::createFromFormat('Y-m', $currentMonth);
 
         // 前月・翌月の値
         $prevMonth = $carbonMonth->copy()->subMonth()->format('Y-m');

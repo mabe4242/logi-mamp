@@ -9,8 +9,8 @@
 
     <div class="attendance__content">
 
-        <div class="attendance__wrappper">
-            
+        <div class="attendance__wrapper">
+
             <p class="attendance__content">勤怠一覧</p>
             <div class="attendance__month">
                 <a href="{{ $prevMonthUrl }}" class="prev__month">
