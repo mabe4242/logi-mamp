@@ -33,9 +33,7 @@ class AttendanceFormatter
         return $attendances;
     }
 
-    /**
-     * 1日分の勤怠データをフォーマット
-     */
+    // 1日分の勤怠データをフォーマットする
     protected static function formatOneDay($record, Carbon $date): object
     {
         if ($record) {

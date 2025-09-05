@@ -10,46 +10,24 @@
         <div class="attendance__content">
             <div class="attendance__wrapper">
                 <p class="attendance__title">勤怠一覧</p>
-                <div class="attendance__month">
-                    <a href="{{ $prevMonthUrl }}" class="prev__month">
-                        <img src="{{ asset('icons/arrow.png') }}" alt="矢印形の画像" class="arrow__left"> 前月
-                    </a>
-                    <span class="current__month">
-                        <img src="{{ asset('icons/month.png') }}" alt="カレンダーの画像" class="month__icon"> {{ $currentMonth }}
-                    </span>
-                    <a href="{{ $nextMonthUrl }}" class="next__month">
-                        翌月 <img src="{{ asset('icons/arrow.png') }}" alt="矢印形の画像" class="arrow__right">
-                    </a>
-                </div>
-                <table class="table__menu">
-                    <thead>
+                <x-table-menu :prevMonthUrl="$prevMonthUrl" :month="$month" :nextMonthUrl="$nextMonthUrl" />
+                <x-table :headers="['日付', '出勤', '退勤', '休憩', '合計', '詳細']">
+                    @foreach ($attendances as $attendance)
                         <tr>
-                            <th class="attendance__column">日付</th>
-                            <th class="attendance__column">出勤</th>
-                            <th class="attendance__column">退勤</th>
-                            <th class="attendance__column">休憩</th>
-                            <th class="attendance__column">合計</th>
-                            <th class="attendance__column">詳細</th>
+                            <td class="attendance__deta">
+                                {{ $attendance->date_display }}<span class="weekday">({{ $attendance->weekday }})</span>
+                            </td>
+                            <td class="attendance__deta">{{ $attendance->clock_in }}</td>
+                            <td class="attendance__deta">{{ $attendance->clock_out }}</td>
+                            <td class="attendance__deta">{{ $attendance->break }}</td>
+                            <td class="attendance__deta">{{ $attendance->total_work }}</td>
+                            <td class="attendance__deta">
+                                {{-- <a class="attendance__detail" href="{{ route('attendance.detail', ['id' => $attendance->id]) }}">詳細</a> --}}
+                                <a class="attendance__detail" href="">詳細</a>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($attendances as $attendance)
-                            <tr>
-                                <td class="attendance__deta">
-                                    {{ $attendance->date_display }}<span class="weekday">({{ $attendance->weekday }})</span>
-                                </td>
-                                <td class="attendance__deta">{{ $attendance->clock_in }}</td>
-                                <td class="attendance__deta">{{ $attendance->clock_out }}</td>
-                                <td class="attendance__deta">{{ $attendance->break }}</td>
-                                <td class="attendance__deta">{{ $attendance->total_work }}</td>
-                                <td class="attendance__deta">
-                                    {{-- <a class="attendance__detail" href="{{ route('attendance.detail', ['id' => $attendance->id]) }}">詳細</a> --}}
-                                    <a class="attendance__detail" href="">詳細</a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                    @endforeach
+                </x-table>
             </div>
         </div>
     </div>
