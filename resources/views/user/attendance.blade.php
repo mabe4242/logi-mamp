@@ -8,31 +8,17 @@
     <x-user_header></x-user_header>
     <div class="content__wrapper">
         <div class="content">
-            @php
-                use App\Enums\AttendanceStatus;
-            @endphp
+            @php use App\Enums\AttendanceStatus; @endphp
             <x-attendance-clock :status="AttendanceStatus::label($attendance->status)"/>
             @if($attendance->status === AttendanceStatus::OFF)
-                <form action="{{ route('attendance.store') }}" method="post">
-                    @csrf
-                    <button type="submit" class="attendance_btn">出勤</button>
-                </form>
+                <x-button route="attendance.store" text="出勤" />
             @elseif($attendance->status === AttendanceStatus::WORKING)
                 <div class="btn__area">
-                    <form action="{{ route('attendance.checkout') }}" method="post">
-                        @csrf
-                        <button type="submit" class="attendance_btn">退勤</button>
-                    </form>
-                    <form action="{{ route('break.start', $attendance->id) }}" method="post">
-                        @csrf
-                        <button type="submit" class="break_btn">休憩入</button>
-                    </form>
+                    <x-button route="attendance.checkout" text="退勤" />
+                    <x-button route="break.start" :param="$attendance->id" text="休憩入" class="break_btn"/>
                 </div>
             @elseif($attendance->status === AttendanceStatus::BREAK)
-                <form action="{{ route('break.end', $attendance->id) }}" method="post">
-                    @csrf
-                    <button type="submit" class="break_btn">休憩戻</button>
-                </form>
+                <x-button route="break.end" :param="$attendance->id" text="休憩戻" class="break_btn"/>
             @elseif($attendance->status === AttendanceStatus::FINISHED)
                 <p class="message">お疲れ様でした。</p>
             @endif

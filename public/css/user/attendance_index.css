@@ -8,7 +8,7 @@
     padding: 60px;
 }
 
-.attendance__wrapper p.attendance__content {
+.attendance__wrapper p.attendance__title {
     max-width: 900px;
     margin: auto;
     font-size: 30px;
@@ -116,7 +116,7 @@
         padding: 0 10px;
     }
 
-    .attendance__wrapper p.attendance__content {
+    .attendance__wrapper p.attendance__title {
         font-size: 24px;
         padding: 4px 15px;
     }

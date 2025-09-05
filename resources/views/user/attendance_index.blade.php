@@ -6,14 +6,10 @@
 
 @section('content')
     <x-user_header></x-user_header>
-
     <div class="content">
-
         <div class="attendance__content">
-
             <div class="attendance__wrapper">
-
-                <p class="attendance__content">勤怠一覧</p>
+                <p class="attendance__title">勤怠一覧</p>
                 <div class="attendance__month">
                     <a href="{{ $prevMonthUrl }}" class="prev__month">
                         <img src="{{ asset('icons/arrow.png') }}" alt="矢印形の画像" class="arrow__left"> 前月
@@ -25,7 +21,6 @@
                         翌月 <img src="{{ asset('icons/arrow.png') }}" alt="矢印形の画像" class="arrow__right">
                     </a>
                 </div>
-
                 <table class="table__menu">
                     <thead>
                         <tr>
