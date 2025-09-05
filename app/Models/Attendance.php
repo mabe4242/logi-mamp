@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\UserBreak;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -37,5 +38,17 @@ class Attendance extends Model
     public function openBreak(): ?UserBreak
     {
         return $this->breaks()->whereNull('break_end')->latest('break_start')->first();
+    }
+
+    //勤怠データをユーザーID・月単位で取得するスコープ
+    public function scopeForUserInMonth($query, int $userId, Carbon $startOfMonth, Carbon $endOfMonth)
+    {
+        return $query->with('breaks')
+            ->where('user_id', $userId)
+            ->whereBetween('date', [$startOfMonth, $endOfMonth])
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [Carbon::parse($item->date)->toDateString() => $item];
+            });
     }
 }
