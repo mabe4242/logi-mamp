@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AttendanceController as UserAttendanceController;
+use App\Http\Controllers\AttendanceRequestController as UserAttendanceRequestController;
 use App\Http\Controllers\BreakController;
 use App\Http\Controllers\Admin\AttendanceController as AdminAttendanceController;
 use App\Http\Controllers\Admin\LoginController;
@@ -14,6 +15,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/attendance/list',  [UserAttendanceController::class, 'index'])->name('attendance.index');
     Route::post('/attendance/{id}/break/start', [BreakController::class, 'start'])->name('break.start');
     Route::post('/attendance/{id}/break/end', [BreakController::class, 'end'])->name('break.end');
+    Route::get('/attendance/detail/{id}', [UserAttendanceRequestController::class, 'create'])->name('attendance.detail');
 });
 
 // 管理者認証

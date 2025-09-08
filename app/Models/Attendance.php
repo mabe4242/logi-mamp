@@ -51,4 +51,24 @@ class Attendance extends Model
                 return [Carbon::parse($item->date)->toDateString() => $item];
             });
     }
+
+    //ユーザーの指定月の勤怠レコードが存在しなければ生成
+    public static function ensureMonthlyRecords(int $userId, Carbon $startOfMonth, Carbon $endOfMonth)
+    {
+        $currentDate = $startOfMonth->copy();
+
+        while ($currentDate->lte($endOfMonth)) {
+            self::firstOrCreate(
+                [
+                    'user_id' => $userId,
+                    'date'    => $currentDate->toDateString(),
+                ],
+                [
+                    'clock_in'  => null,
+                    'clock_out' => null,
+                ]
+            );
+            $currentDate->addDay();
+        }
+    }
 }

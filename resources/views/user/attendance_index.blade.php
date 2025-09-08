@@ -22,8 +22,7 @@
                             <td class="attendance__deta">{{ $attendance->break }}</td>
                             <td class="attendance__deta">{{ $attendance->total_work }}</td>
                             <td class="attendance__deta">
-                                {{-- <a class="attendance__detail" href="{{ route('attendance.detail', ['id' => $attendance->id]) }}">詳細</a> --}}
-                                <a class="attendance__detail" href="">詳細</a>
+                                <a class="attendance__detail" href="{{ route('attendance.detail', ['id' => $attendance->id]) }}">詳細</a>
                             </td>
                         </tr>
                     @endforeach
