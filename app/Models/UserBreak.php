@@ -23,4 +23,9 @@ class UserBreak extends Model
     {
         return $this->belongsTo(Attendance::class);
     }
+
+    public function breakRequests()
+    {
+        return $this->hasMany(BreakRequest::class, 'break_id');
+    }
 }

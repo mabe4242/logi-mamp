@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attendance;
-use App\Models\UserBreak;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Models\AttendanceRequest;
+use App\Models\BreakRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AttendanceRequestController extends Controller
 {
@@ -25,5 +28,46 @@ class AttendanceRequestController extends Controller
         });
 
         return view('user.attendance_request', compact('attendance', 'breaks'));
+    }
+
+    public function store(Request $request, $attendanceId)
+    {
+        $attendance = Attendance::with('breaks')->findOrFail($attendanceId);
+
+        DB::transaction(function () use ($request, $attendance) {
+            
+            $clockIn = $request->clock_in ? (clone $attendance->date)->setTimeFromTimeString($request->clock_in) : null;
+            $clockOut = $request->clock_out ? (clone $attendance->date)->setTimeFromTimeString($request->clock_out) : null;
+
+            $attendanceRequest = AttendanceRequest::create([
+                'user_id' => Auth::id(),
+                'attendance_id' => $attendance->id,
+                'request_date' => $attendance->date,
+                'clock_in' => $clockIn,
+                'clock_out' => $clockOut,
+                'status' => 'pending',
+                'reason' => $request->reason,
+            ]);
+
+            // BreakRequests 保存
+            $breaksInput = $request->input('breaks', []);
+            foreach ($breaksInput as $index => $breakData) {
+                $breakStart = $breakData['break_start'] ?? null;
+                $breakEnd = $breakData['break_end'] ?? null;
+
+                if ($breakStart || $breakEnd) {
+                    BreakRequest::create([
+                        'attendance_request_id' => $attendanceRequest->id,
+                        'break_id' => $attendance->breaks[$index]->id ?? null, // 既存休憩は id、新規は null→これnullでいけるか？？？？？
+                        'break_start' => $breakStart ? (clone $attendance->date)->setTimeFromTimeString($breakStart) : null,
+                        'break_end' => $breakEnd ? (clone $attendance->date)->setTimeFromTimeString($breakEnd) : null,
+                    ]);
+                }
+            }
+
+        });
+
+        //ここの行き先の画面を変えないと！！！
+        return redirect()->route('attendance.detail', $attendance->id);
     }
 }

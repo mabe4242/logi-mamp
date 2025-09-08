@@ -10,7 +10,7 @@
         <div class="attendance__content">
             <div class="attendance__wrapper">
                 <p class="attendance__title">勤怠詳細</p>
-                <form action="" class="attendance_detail" method="POST">
+                <form action="{{ route('attendance_request.store', $attendance->id) }}" class="attendance_detail" method="POST">
                     @csrf
                     <table class="attendance__table">
                         <x-attendance-edit-row label="名前">{{ Auth::user()->name }}</x-attendance-edit-row>

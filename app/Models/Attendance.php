@@ -34,6 +34,11 @@ class Attendance extends Model
         return $this->hasMany(UserBreak::class);
     }
 
+    public function attendanceRequests(): HasMany
+    {
+        return $this->hasMany(AttendanceRequest::class);
+    }
+
     // 進行中（未終了）の休憩を1件返すヘルパ
     public function openBreak(): ?UserBreak
     {
