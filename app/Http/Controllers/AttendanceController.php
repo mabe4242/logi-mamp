@@ -54,18 +54,7 @@ class AttendanceController extends Controller
         $now    = now();
 
         return DB::transaction(function () use ($userId, $now) {
-            $attendance = Attendance::where('user_id', $userId)
-                ->where('date', $now->toDateString())
-                ->lockForUpdate()
-                ->first();
-
-            if (!$attendance) {
-                $attendance = Attendance::create([
-                    'user_id'  => $userId,
-                    'date'     => $now->toDateString(),
-                    'status'   => AttendanceStatus::OFF,
-                ]);
-            }
+            $attendance = Attendance::getOrCreateToday($userId, $now, AttendanceStatus::OFF);
 
             if ($attendance->status !== AttendanceStatus::OFF) {
                 return back();
@@ -86,10 +75,7 @@ class AttendanceController extends Controller
         $now    = now();
 
         return DB::transaction(function () use ($userId, $now) {
-            $attendance = Attendance::where('user_id', $userId)
-                ->where('date', $now->toDateString())
-                ->lockForUpdate()
-                ->firstOrFail();
+            $attendance = Attendance::forTodayWithLock($userId, $now)->firstOrFail();
 
             if (! in_array($attendance->status, [AttendanceStatus::WORKING, AttendanceStatus::BREAK], true)) {
                 return back();

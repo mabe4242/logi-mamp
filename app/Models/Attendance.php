@@ -76,4 +76,28 @@ class Attendance extends Model
             $currentDate->addDay();
         }
     }
+
+    //当日の勤怠レコードを取得してロック
+    public function scopeForTodayWithLock($query, $userId, Carbon $now)
+    {
+        return $query->where('user_id', $userId)
+            ->where('date', $now->toDateString())
+            ->lockForUpdate();
+    }
+
+    //当日の勤怠レコードを取得 or 作成
+    public static function getOrCreateToday($userId, Carbon $now, $defaultStatus)
+    {
+        $attendance = self::forTodayWithLock($userId, $now)->first();
+
+        if (!$attendance) {
+            $attendance = self::create([
+                'user_id' => $userId,
+                'date'    => $now->toDateString(),
+                'status'  => $defaultStatus,
+            ]);
+        }
+
+        return $attendance;
+    }
 }
