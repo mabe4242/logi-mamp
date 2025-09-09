@@ -34,8 +34,7 @@ class AttendanceRequestController extends Controller
     {
         $attendance = Attendance::with('breaks')->findOrFail($attendanceId);
 
-        DB::transaction(function () use ($request, $attendance) {
-            
+        $attendanceRequest = DB::transaction(function () use ($request, $attendance) {
             $clockIn = $request->clock_in ? (clone $attendance->date)->setTimeFromTimeString($request->clock_in) : null;
             $clockOut = $request->clock_out ? (clone $attendance->date)->setTimeFromTimeString($request->clock_out) : null;
 
@@ -58,16 +57,26 @@ class AttendanceRequestController extends Controller
                 if ($breakStart || $breakEnd) {
                     BreakRequest::create([
                         'attendance_request_id' => $attendanceRequest->id,
-                        'break_id' => $attendance->breaks[$index]->id ?? null, // 既存休憩は id、新規は null→これnullでいけるか？？？？？
+                        'break_id' => $attendance->breaks[$index]->id ?? null,
                         'break_start' => $breakStart ? (clone $attendance->date)->setTimeFromTimeString($breakStart) : null,
                         'break_end' => $breakEnd ? (clone $attendance->date)->setTimeFromTimeString($breakEnd) : null,
                     ]);
                 }
             }
 
+            return $attendanceRequest;
         });
 
-        //ここの行き先の画面を変えないと！！！
-        return redirect()->route('attendance.detail', $attendance->id);
+        return redirect()->route('attendance_requests.show', $attendanceRequest->id);
+    }
+
+    public function show($id)
+    {
+        $attendanceRequest = AttendanceRequest::with('breakRequests')->findOrFail($id);
+
+        return view('user.approve', [
+            'attendanceRequest' => $attendanceRequest,
+            'breaks' => $attendanceRequest->breakRequests,
+        ]);
     }
 }

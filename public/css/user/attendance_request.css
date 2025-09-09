@@ -113,8 +113,21 @@ textarea {
 
 .error__message {
     margin-top: 5px;
-    color: red;
+    color: #ff0000;
     font-size: 16px;
+}
+
+.approve__message {
+    color: #ff0000;
+    display: block;
+    margin-left: auto;
+    margin-top: 15px;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: right;
+    opacity: 50%;
+    letter-spacing: 2px;
 }
 
 /* レスポンシブ対応 */
