@@ -11,9 +11,7 @@
             <div class="attendance__wrapper">
                 <p class="attendance__title">勤怠詳細</p>
                 <table class="attendance__table">
-                    <x-attendance-edit-row label="名前">
-                        {{ $attendanceRequest->user->name }}
-                    </x-attendance-edit-row>
+                    <x-attendance-edit-row label="名前">{{ $attendanceRequest->user->name }}</x-attendance-edit-row>
                     <x-attendance-edit-row label="日付">
                         <div class="date">
                             <p class="year input-date">{{ $attendanceRequest->request_date->format('Y年') }}</p>

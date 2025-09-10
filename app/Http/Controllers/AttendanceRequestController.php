@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\RequestStatus;
 use App\Models\Attendance;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -44,7 +45,7 @@ class AttendanceRequestController extends Controller
                 'request_date' => $attendance->date,
                 'clock_in' => $clockIn,
                 'clock_out' => $clockOut,
-                'status' => 'pending',
+                'status' => RequestStatus::PENDING,
                 'reason' => $request->reason,
             ]);
 
