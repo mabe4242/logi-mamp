@@ -1,5 +1,6 @@
 .content {
     background-color: #f0eff2;
+    min-height: 100vh
 }
 
 .attendance__content {
@@ -17,6 +18,33 @@
     text-align: left;
     border-left: 8px solid #000000;
     padding: 4px 20px;
+}
+
+.request__nav {
+    display: flex;
+    border-bottom: 2px solid #000000;
+    margin-bottom: 40px;
+    margin-top: 50px;
+}
+
+.request__nav a {
+    color: #000000;
+    font-weight: normal;
+    font-size: 1rem;
+    text-decoration: none;
+    padding-bottom: 10px;
+    margin-left: 80px;
+    border-bottom: 3px solid transparent;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.request__nav a:first-child {
+    margin-left: 50px;
+}
+
+.request__nav a.active {
+    color: #000000;
+    font-weight: bold;
 }
 
 .attendance__month {

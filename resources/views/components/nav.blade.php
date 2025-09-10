@@ -1,0 +1,18 @@
+@php
+    use App\Enums\RequestStatus;
+@endphp
+
+@props([
+    'status',
+])
+
+<nav class="request__nav">
+    <a href="{{ route('attendance_requests.index', ['status' => RequestStatus::PENDING]) }}"
+       class="{{ $status == RequestStatus::PENDING ? 'active' : '' }}">
+        承認待ち
+    </a>
+    <a href="{{ route('attendance_requests.index', ['status' => RequestStatus::APPROVED]) }}"
+       class="{{ $status == RequestStatus::APPROVED ? 'active' : '' }}">
+        承認済み
+    </a>
+</nav>

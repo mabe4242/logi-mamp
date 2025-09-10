@@ -80,4 +80,17 @@ class AttendanceRequestController extends Controller
             'breaks' => $attendanceRequest->breakRequests,
         ]);
     }
+
+    public function index($status = null)
+    {
+        if ($status === null) {
+            return redirect()->route('attendance_requests.index', ['status' => RequestStatus::PENDING]);
+        }
+
+        $query = AttendanceRequest::where('user_id', Auth::id())
+            ->where('status', $status);
+        $attendanceRequests = $query->latest()->get();
+
+        return view('user.request_index', compact('attendanceRequests', 'status'));
+    }
 }
