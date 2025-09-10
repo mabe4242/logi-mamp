@@ -19,6 +19,7 @@ class LoginController extends Controller
 
         if (Auth::guard('admin')->attempt($credentials)) {
             $request->session()->regenerate();
+
             return redirect()->intended('/admin/attendance/list');
         }
 
@@ -37,4 +38,3 @@ class LoginController extends Controller
         return redirect('/admin/login');
     }
 }
-

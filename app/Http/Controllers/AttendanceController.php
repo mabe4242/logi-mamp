@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Enums\AttendanceStatus;
-use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Services\AttendanceFormatter;
 use App\Services\CarbonCalc;
@@ -21,7 +20,7 @@ class AttendanceController extends Controller
         // リクエストされた月を取得
         $month = $request->query('month', Carbon::now()->format('Y/m'));
         $startOfMonth = Carbon::createFromFormat('Y/m', $month)->startOfMonth();
-        $endOfMonth   = Carbon::createFromFormat('Y/m', $month)->endOfMonth();
+        $endOfMonth = Carbon::createFromFormat('Y/m', $month)->endOfMonth();
         Attendance::ensureMonthlyRecords($user->id, $startOfMonth, $endOfMonth);
 
         // 勤怠データを取得・フォーマットを整形
@@ -38,7 +37,7 @@ class AttendanceController extends Controller
     public function create(Request $request)
     {
         $userId = Auth::id();
-        $today  = now()->toDateString();
+        $today = now()->toDateString();
 
         $attendance = Attendance::firstOrCreate(
             ['user_id' => $userId, 'date' => $today],
@@ -51,7 +50,7 @@ class AttendanceController extends Controller
     public function store()
     {
         $userId = Auth::id();
-        $now    = now();
+        $now = now();
 
         return DB::transaction(function () use ($userId, $now) {
             $attendance = Attendance::getOrCreateToday($userId, $now, AttendanceStatus::OFF);
@@ -62,7 +61,7 @@ class AttendanceController extends Controller
 
             $attendance->update([
                 'clock_in' => $now,
-                'status'   => AttendanceStatus::WORKING,
+                'status' => AttendanceStatus::WORKING,
             ]);
 
             return redirect()->route('attendance.create');
@@ -72,7 +71,7 @@ class AttendanceController extends Controller
     public function checkout()
     {
         $userId = Auth::id();
-        $now    = now();
+        $now = now();
 
         return DB::transaction(function () use ($userId, $now) {
             $attendance = Attendance::forTodayWithLock($userId, $now)->firstOrFail();
@@ -91,7 +90,7 @@ class AttendanceController extends Controller
 
             $attendance->update([
                 'clock_out' => $now,
-                'status'    => AttendanceStatus::FINISHED,
+                'status' => AttendanceStatus::FINISHED,
             ]);
 
             return redirect()->route('attendance.create');

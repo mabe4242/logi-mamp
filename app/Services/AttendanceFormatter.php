@@ -10,10 +10,7 @@ class AttendanceFormatter
     /**
      * 指定された日付範囲でユーザーの勤怠データを整形して返す
      *
-     * @param \Illuminate\Support\Collection $attendanceRecords (dateをキーにしたコレクション)
-     * @param \Carbon\Carbon $startOfMonth
-     * @param \Carbon\Carbon $endOfMonth
-     * @return \Illuminate\Support\Collection
+     * @param  \Illuminate\Support\Collection  $attendanceRecords  (dateをキーにしたコレクション)
      */
     public static function format(Collection $attendanceRecords, Carbon $startOfMonth, Carbon $endOfMonth): Collection
     {
@@ -37,7 +34,7 @@ class AttendanceFormatter
     protected static function formatOneDay($record, Carbon $date): object
     {
         if ($record) {
-            $clockIn  = $record->clock_in ? Carbon::parse($record->clock_in) : null;
+            $clockIn = $record->clock_in ? Carbon::parse($record->clock_in) : null;
             $clockOut = $record->clock_out ? Carbon::parse($record->clock_out) : null;
 
             // 休憩合計時間（分）
@@ -45,6 +42,7 @@ class AttendanceFormatter
                 if ($break->break_start && $break->break_end) {
                     $carry += Carbon::parse($break->break_start)->diffInMinutes(Carbon::parse($break->break_end));
                 }
+
                 return $carry;
             }, 0);
 
@@ -54,7 +52,7 @@ class AttendanceFormatter
                 $workMinutes = $clockIn->diffInMinutes($clockOut) - $totalBreakMinutes;
             }
 
-            return (object)[
+            return (object) [
                 'id' => $record->id,
                 'date' => $date->toDateString(),
                 'date_display' => $date->format('m/d'),
@@ -71,7 +69,7 @@ class AttendanceFormatter
         }
 
         // 出勤記録なし
-        return (object)[
+        return (object) [
             'id' => null,
             'date' => $date->toDateString(),
             'date_display' => $date->format('m/d'),

@@ -11,12 +11,12 @@ class UserBreak extends Model
     protected $fillable = [
         'attendance_id',
         'break_start',
-        'break_end'
+        'break_end',
     ];
 
     protected $casts = [
         'break_start' => 'datetime',
-        'break_end'   => 'datetime',
+        'break_end' => 'datetime',
     ];
 
     public function attendance()

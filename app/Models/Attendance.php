@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\UserBreak;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,12 +14,12 @@ class Attendance extends Model
         'date',
         'clock_in',
         'clock_out',
-        'status'
+        'status',
     ];
 
     protected $casts = [
-        'date'      => 'date',
-        'clock_in'  => 'datetime',
+        'date' => 'date',
+        'clock_in' => 'datetime',
         'clock_out' => 'datetime',
     ];
 
@@ -45,7 +44,7 @@ class Attendance extends Model
         return $this->breaks()->whereNull('break_end')->latest('break_start')->first();
     }
 
-    //勤怠データをユーザーID・月単位で取得するスコープ
+    // 勤怠データをユーザーID・月単位で取得するスコープ
     public function scopeForUserInMonth($query, int $userId, Carbon $startOfMonth, Carbon $endOfMonth)
     {
         return $query->with('breaks')
@@ -57,7 +56,7 @@ class Attendance extends Model
             });
     }
 
-    //ユーザーの指定月の勤怠レコードが存在しなければ生成
+    // ユーザーの指定月の勤怠レコードが存在しなければ生成
     public static function ensureMonthlyRecords(int $userId, Carbon $startOfMonth, Carbon $endOfMonth)
     {
         $currentDate = $startOfMonth->copy();
@@ -66,10 +65,10 @@ class Attendance extends Model
             self::firstOrCreate(
                 [
                     'user_id' => $userId,
-                    'date'    => $currentDate->toDateString(),
+                    'date' => $currentDate->toDateString(),
                 ],
                 [
-                    'clock_in'  => null,
+                    'clock_in' => null,
                     'clock_out' => null,
                 ]
             );
@@ -77,7 +76,7 @@ class Attendance extends Model
         }
     }
 
-    //当日の勤怠レコードを取得してロック
+    // 当日の勤怠レコードを取得してロック
     public function scopeForTodayWithLock($query, $userId, Carbon $now)
     {
         return $query->where('user_id', $userId)
@@ -85,16 +84,16 @@ class Attendance extends Model
             ->lockForUpdate();
     }
 
-    //当日の勤怠レコードを取得 or 作成
+    // 当日の勤怠レコードを取得 or 作成
     public static function getOrCreateToday($userId, Carbon $now, $defaultStatus)
     {
         $attendance = self::forTodayWithLock($userId, $now)->first();
 
-        if (!$attendance) {
+        if (! $attendance) {
             $attendance = self::create([
                 'user_id' => $userId,
-                'date'    => $now->toDateString(),
-                'status'  => $defaultStatus,
+                'date' => $now->toDateString(),
+                'status' => $defaultStatus,
             ]);
         }
 

@@ -20,7 +20,7 @@ class BreakController extends Controller
 
             UserBreak::create([
                 'attendance_id' => $attendance->id,
-                'break_start'   => now(),
+                'break_start' => now(),
             ]);
 
             $attendance->update([
