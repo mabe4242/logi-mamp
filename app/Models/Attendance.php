@@ -99,4 +99,34 @@ class Attendance extends Model
 
         return $attendance;
     }
+
+    public function getYearFormattedAttribute()
+    {
+        return $this->date ? $this->date->format('Y年') : null;
+    }
+
+    public function getMonthDayFormattedAttribute()
+    {
+        return $this->date ? $this->date->format('m月d日') : null;
+    }
+
+    public function getClockInFormattedAttribute()
+    {
+        return $this->clock_in ? $this->clock_in->format('H:i') : null;
+    }
+
+    public function getClockOutFormattedAttribute()
+    {
+        return $this->clock_out ? $this->clock_out->format('H:i') : null;
+    }
+
+    public function getYearAttribute()
+    {
+        return $this->date ? Carbon::parse($this->date)->format('Y年') : null;
+    }
+
+    public function getMonthDayAttribute()
+    {
+        return $this->date ? Carbon::parse($this->date)->format('n月j日') : null;
+    }
 }

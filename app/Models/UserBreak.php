@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class UserBreak extends Model
@@ -27,5 +29,23 @@ class UserBreak extends Model
     public function breakRequests()
     {
         return $this->hasMany(BreakRequest::class, 'break_id');
+    }
+
+    protected function breakStartFormatted(): Attribute
+    {
+        return Attribute::get(function ($value, $attributes) {
+            return $attributes['break_start']
+                ? Carbon::parse($attributes['break_start'])->format('H:i')
+                : null;
+        });
+    }
+
+    protected function breakEndFormatted(): Attribute
+    {
+        return Attribute::get(function ($value, $attributes) {
+            return $attributes['break_end']
+                ? Carbon::parse($attributes['break_end'])->format('H:i')
+                : null;
+        });
     }
 }

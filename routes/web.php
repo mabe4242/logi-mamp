@@ -15,10 +15,9 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/attendance/list', [UserAttendanceController::class, 'index'])->name('attendance.index');
     Route::post('/attendance/{id}/break/start', [BreakController::class, 'start'])->name('break.start');
     Route::post('/attendance/{id}/break/end', [BreakController::class, 'end'])->name('break.end');
-    Route::get('/attendance/detail/{id}', [UserAttendanceRequestController::class, 'create'])->name('attendance.detail');
+    Route::get('/attendance/detail/{id}', [UserAttendanceRequestController::class, 'show'])->name('attendance.detail');
     Route::post('/attendance/detail/{id}', [UserAttendanceRequestController::class, 'store'])->name('attendance_request.store');
-    Route::get('/stamp_correction_request/list/{status?}', [UserAttendanceRequestController::class, 'index'])->name('attendance_requests.index');
-    Route::get('/stamp_correction_request/{id}', [UserAttendanceRequestController::class, 'show'])->name('attendance_requests.show');
+    Route::get('/stamp_correction_request/list', [UserAttendanceRequestController::class, 'index'])->name('attendance_requests.index');
 });
 
 // 管理者認証

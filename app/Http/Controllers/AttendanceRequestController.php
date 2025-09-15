@@ -7,31 +7,29 @@ use App\Models\Attendance;
 use App\Models\AttendanceRequest;
 use App\Models\BreakRequest;
 use App\Traits\HandlesTransaction;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class AttendanceRequestController extends Controller
 {
     use HandlesTransaction;
 
-    public function create($id)
+    public function show($id)
     {
         $attendance = Attendance::with('breaks')->findOrFail($id);
-        $attendance->year = Carbon::parse($attendance->date)->format('Y年');
-        $attendance->month_day = Carbon::parse($attendance->date)->format('m月d日');
-        $attendance->clock_in_formatted = $attendance->clock_in ? Carbon::parse($attendance->clock_in)->format('H:i') : null;
-        $attendance->clock_out_formatted = $attendance->clock_out ? Carbon::parse($attendance->clock_out)->format('H:i') : null;
+        $attendanceRequest = AttendanceRequest::where('attendance_id', $id)->latest()->first();
+        $breaks = $attendanceRequest ? $attendanceRequest->breakRequests : $attendance->breaks;
 
-        $breaks = $attendance->breaks->map(function ($break) {
-            return [
-                'break_start' => $break->break_start ? Carbon::parse($break->break_start)->format('H:i') : null,
-                'break_end' => $break->break_end ? Carbon::parse($break->break_end)->format('H:i') : null,
-            ];
-        });
+        return view('user.attendance_detail', compact('attendance', 'attendanceRequest', 'breaks'));
+    }
 
-        return view('user.attendance_request', compact('attendance', 'breaks'));
+    public function index(Request $request)
+    {
+        $status = $request->input('status', RequestStatus::PENDING);
+        $query = AttendanceRequest::where('user_id', Auth::id())->where('status', $status);
+        $attendanceRequests = $query->latest()->get();
+
+        return view('user.request_index', compact('attendanceRequests', 'status'));
     }
 
     public function store(Request $request, $attendanceId)
@@ -52,7 +50,6 @@ class AttendanceRequestController extends Controller
                 'reason'        => $request->reason,
             ]);
 
-            // BreakRequests 保存
             $breaksInput = $request->input('breaks', []);
             foreach ($breaksInput as $index => $breakData) {
                 $breakStart = $breakData['break_start'] ?? null;
@@ -76,29 +73,6 @@ class AttendanceRequestController extends Controller
             return $attendanceRequest;
         }
 
-        return redirect()->route('attendance_requests.show', $attendanceRequest->id);
-    }
-
-    public function show($id)
-    {
-        $attendanceRequest = AttendanceRequest::with('breakRequests')->findOrFail($id);
-
-        return view('user.approve', [
-            'attendanceRequest' => $attendanceRequest,
-            'breaks' => $attendanceRequest->breakRequests,
-        ]);
-    }
-
-    public function index($status = null)
-    {
-        if ($status === null) {
-            return redirect()->route('attendance_requests.index', ['status' => RequestStatus::PENDING]);
-        }
-
-        $query = AttendanceRequest::where('user_id', Auth::id())
-            ->where('status', $status);
-        $attendanceRequests = $query->latest()->get();
-
-        return view('user.request_index', compact('attendanceRequests', 'status'));
+        return redirect()->route('attendance.index');
     }
 }
