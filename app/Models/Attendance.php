@@ -54,6 +54,13 @@ class Attendance extends Model
             ->get();
     }
 
+    public static function getDailyAttendances(Carbon $date)
+    {
+        return self::with(['user', 'breaks'])
+            ->whereDate('date', $date)
+            ->get();
+    }
+
     // 当日の勤怠レコードを取得してロック
     public function scopeForTodayWithLock($query, $userId, Carbon $now)
     {
