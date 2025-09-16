@@ -22,7 +22,11 @@
                             <td class="attendance__deta">{{ $attendance->break }}</td>
                             <td class="attendance__deta">{{ $attendance->total_work }}</td>
                             <td class="attendance__deta">
-                                <a class="attendance__detail" href="{{ route('attendance.detail', ['id' => $attendance->id]) }}">詳細</a>
+                                @if ($attendance->is_future)
+                                    <div class="attendance__detail disabled"><a href="#">詳細</a></div>
+                                @else
+                                    <a class="attendance__detail" href="{{ route('attendance.detail_or_create', ['date' => $attendance->date->toDateString()]) }}">詳細</a>
+                                @endif
                             </td>
                         </tr>
                     @endforeach

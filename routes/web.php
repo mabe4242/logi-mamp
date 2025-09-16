@@ -16,6 +16,7 @@ Route::middleware(['auth:web'])->group(function () {
     Route::post('/attendance/{id}/break/start', [BreakController::class, 'start'])->name('break.start');
     Route::post('/attendance/{id}/break/end', [BreakController::class, 'end'])->name('break.end');
     Route::get('/attendance/detail/{id}', [UserAttendanceRequestController::class, 'show'])->name('attendance.detail');
+    Route::get('/attendance/detail_or_create/{date}', [UserAttendanceRequestController::class, 'detailOrCreate'])->name('attendance.detail_or_create');
     Route::post('/attendance/detail/{id}', [UserAttendanceRequestController::class, 'store'])->name('attendance_request.store');
     Route::get('/stamp_correction_request/list', [UserAttendanceRequestController::class, 'index'])->name('attendance_requests.index');
 });
