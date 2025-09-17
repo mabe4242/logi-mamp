@@ -14,7 +14,8 @@
                 @if(isset($attendanceRequest) && $attendanceRequest->status == RequestStatus::PENDING)
                     <x-attendance-approve-view :attendanceRequest="$attendanceRequest" :breaks="$breaks" />
                 @else
-                    <x-attendance-request-form :attendance="$attendance" :breaks="$breaks" :errors="$errors" />
+                    <x-attendance-request-form :attendance="$attendance" :breaks="$breaks" :errors="$errors" 
+                        :formAction="route('attendance_request.store',  $attendance->id)"/>
                 @endif
             </div>
         </div>

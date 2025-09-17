@@ -16,7 +16,7 @@ class AttendanceRequestController extends Controller
 
     public function show($id)
     {
-        $attendance = Attendance::with('breaks')->findOrFail($id);
+        $attendance = Attendance::with('breaks', 'user')->findOrFail($id);
         $attendanceRequest = AttendanceRequest::where('attendance_id', $id)->latest()->first();
         $breaks = $attendanceRequest ? $attendanceRequest->breakRequests : $attendance->breaks;
 

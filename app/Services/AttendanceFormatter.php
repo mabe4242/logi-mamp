@@ -82,6 +82,7 @@ class AttendanceFormatter
             $calc = self::calculate($attendance);
 
             return (object) [
+                'id'         => $attendance->id,
                 'userName'   => $attendance->user->name,
                 'clock_in'   => $attendance->clock_in ? $attendance->clock_in->format('H:i') : '',
                 'clock_out'  => $attendance->clock_out ? $attendance->clock_out->format('H:i') : '',
