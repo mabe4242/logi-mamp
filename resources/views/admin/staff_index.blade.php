@@ -16,7 +16,9 @@
                             <tr>
                                 <td class="attendance__deta">{{ $user->user_name }}</td>
                                 <td class="attendance__deta">{{ $user->email }}</td>
-                                <td class="attendance__deta"><a class="attendance__detail" href="#">詳細</a></td>
+                                <td class="attendance__deta">
+                                    <a class="attendance__detail" href="{{route('admin.staff_attendance', ['id' => $user->id])}}">詳細</a>
+                                </td>
                             </tr>
                         @endforeach
                     </x-table>

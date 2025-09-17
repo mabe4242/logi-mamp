@@ -152,6 +152,29 @@
     margin-top: 60px;
 }
 
+.export-button {
+    text-align: right;
+    margin-top: 40px;
+}
+
+.export-button__text {
+    display: inline-block;
+    padding: 10px 30px;
+    font-weight: bold;
+    background-color: #000000;
+    color: #ffffff;
+    font-size: 1em;
+    letter-spacing: 3px;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.export-button__text:hover {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
 /* レスポンシブ */
 @media (max-width: 768px) {
     .attendance__content {
