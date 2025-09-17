@@ -13,6 +13,7 @@
                 @php use App\Enums\RequestStatus; @endphp
                 @if(isset($attendanceRequest) && $attendanceRequest->status == RequestStatus::PENDING)
                     <x-attendance-approve-view :attendanceRequest="$attendanceRequest" :breaks="$breaks" />
+                    <p class="approve__message">*承認待ちのため修正はできません。</p>
                 @else
                     <x-attendance-request-form :attendance="$attendance" :breaks="$breaks" :errors="$errors" 
                         :formAction="route('attendance_request.store',  $attendance->id)"/>

@@ -31,7 +31,7 @@ class UserBreak extends Model
         return $this->hasMany(BreakRequest::class, 'break_id');
     }
 
-    protected function breakStartFormatted(): Attribute
+    protected function breakStartFormatted()
     {
         return Attribute::get(function ($value, $attributes) {
             return $attributes['break_start']
@@ -40,7 +40,7 @@ class UserBreak extends Model
         });
     }
 
-    protected function breakEndFormatted(): Attribute
+    protected function breakEndFormatted()
     {
         return Attribute::get(function ($value, $attributes) {
             return $attributes['break_end']
