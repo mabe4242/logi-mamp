@@ -22,7 +22,7 @@
                             <td class="attendance__deta">{{ $request->created_at->format('Y/m/d') }}</td>
                             <td class="attendance__deta">
                                 <a class="attendance__detail" href="{{ route('attendance.detail', 
-                                    ['id' => $request->attendance_id, 'from' => 'request_list']) }}">詳細</a>
+                                    ['id' => $request->attendance_id, 'request_id' => $request->id, 'from' => 'request_list']) }}">詳細</a>
                             </td>
                         </tr>
                     @endforeach

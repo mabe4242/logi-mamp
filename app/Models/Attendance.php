@@ -183,4 +183,12 @@ class Attendance extends Model
     {
         return $this->date ? Carbon::parse($this->date)->format('n月j日') : null;
     }
+
+    public function getRequest(?int $requestId = null)
+    {
+        return $this->attendanceRequests()
+            ->with(['breakRequests', 'admin'])
+            ->when($requestId, fn($q) => $q->where('id', $requestId), fn($q) => $q->latest())
+            ->first();
+    }
 }
