@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\User;
 use App\Services\AttendanceFormatter;
+use App\Services\AttendanceService;
 use App\Services\CarbonCalc;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -16,7 +17,7 @@ class AttendanceController extends Controller
     public function index(Request $request)
     {
         $date = $request->query('date') ? Carbon::parse($request->query('date'))->startOfDay() : Carbon::today();
-        $attendances = Attendance::getDailyAttendances($date);
+        $attendances = AttendanceService::getDailyAttendances($date);
         $attendances = AttendanceFormatter::formatDay($attendances);
 
         $prevUrl = route('admin.attendance.index', ['date' => $date->copy()->subDay()->toDateString()]);
@@ -35,7 +36,7 @@ class AttendanceController extends Controller
         $endOfMonth   = Carbon::createFromFormat('Y/m', $month)->endOfMonth();
 
         // 勤怠データを取得・フォーマットして整形
-        $attendances = Attendance::getMonthlyAttendances($user->id, $startOfMonth, $endOfMonth);
+        $attendances = AttendanceService::getMonthlyAttendances($user->id, $startOfMonth, $endOfMonth);
         $attendances = AttendanceFormatter::formatMonth($attendances);
 
         $months = CarbonCalc::getMonths($month);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\AttendanceStatus;
 use App\Models\Attendance;
 use App\Services\AttendanceFormatter;
+use App\Services\AttendanceService;
 use App\Services\CarbonCalc;
 use App\Traits\HandlesTransaction;
 use Carbon\Carbon;
@@ -25,7 +26,7 @@ class AttendanceController extends Controller
         $endOfMonth = Carbon::createFromFormat('Y/m', $month)->endOfMonth();
 
         // 勤怠データを取得・フォーマットして整形
-        $attendances = Attendance::getMonthlyAttendances($user->id, $startOfMonth, $endOfMonth);
+        $attendances = AttendanceService::getMonthlyAttendances($user->id, $startOfMonth, $endOfMonth);
         $attendances = AttendanceFormatter::formatMonth($attendances);
 
         $months = CarbonCalc::getMonths($month);
@@ -54,7 +55,7 @@ class AttendanceController extends Controller
         $now = now();
 
         return $this->handleTransaction(function () use ($userId, $now) {
-            $attendance = Attendance::getOrCreateToday($userId, $now, AttendanceStatus::OFF);
+            $attendance = AttendanceService::getOrCreateToday($userId, $now, AttendanceStatus::OFF);
 
             if ($attendance->status !== AttendanceStatus::OFF) {
                 return back();
