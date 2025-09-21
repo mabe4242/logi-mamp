@@ -11,7 +11,7 @@
             <div class="attendance__wrapper">
                 <p class="attendance__title">勤怠詳細</p>
                 @php use App\Enums\RequestStatus; @endphp
-                <form action="#" class="attendance_detail" method="POST">
+                <form action="{{ route('admin.approve', $attendanceRequest->id) }}" class="attendance_detail" method="POST">
                     @csrf
                     <x-attendance-approve-view :attendanceRequest="$attendanceRequest" :breaks="$breaks" />
                     @if($attendanceRequest->status === RequestStatus::PENDING)
