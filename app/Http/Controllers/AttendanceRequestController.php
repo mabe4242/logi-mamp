@@ -14,13 +14,14 @@ class AttendanceRequestController extends Controller
 {
     use HandlesTransaction;
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $attendance = Attendance::with('breaks', 'user')->findOrFail($id);
         $attendanceRequest = AttendanceRequest::where('attendance_id', $id)->latest()->first();
         $breaks = $attendanceRequest ? $attendanceRequest->breakRequests : $attendance->breaks;
+        $source = $request->query('from');
 
-        return view('user.attendance_detail', compact('attendance', 'attendanceRequest', 'breaks'));
+        return view('user.attendance_detail', compact('attendance', 'attendanceRequest', 'breaks', 'source'));
     }
 
     public function index(Request $request)
@@ -41,7 +42,7 @@ class AttendanceRequestController extends Controller
             ['status' => 0]
         );
 
-        return redirect()->route('attendance.detail', ['id' => $attendance->id]);
+        return redirect()->route('attendance.detail', ['id' => $attendance->id, 'from' => 'attendance_list']);
     }
 
     public function store(Request $request, $attendanceId)
@@ -55,6 +56,6 @@ class AttendanceRequestController extends Controller
             return $attendanceRequest;
         }
 
-        return redirect()->route('attendance.index');
+        return redirect()->route('attendance.detail', ['id' => $attendance->id]);
     }
 }

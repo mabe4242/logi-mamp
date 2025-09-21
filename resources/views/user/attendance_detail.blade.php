@@ -14,6 +14,9 @@
                 @if(isset($attendanceRequest) && $attendanceRequest->status == RequestStatus::PENDING)
                     <x-attendance-approve-view :attendanceRequest="$attendanceRequest" :breaks="$breaks" />
                     <p class="approve__message">*承認待ちのため修正はできません。</p>
+                @elseif(isset($attendanceRequest) && $attendanceRequest->status == RequestStatus::APPROVED && $source === 'request_list')
+                        <x-attendance-approve-view :attendanceRequest="$attendanceRequest" :breaks="$breaks" />
+                        <p class="approve__message">*承認済み（管理者名: {{$attendanceRequest->admin->name}}）</p>
                 @else
                     <x-attendance-request-form :attendance="$attendance" :breaks="$breaks" :errors="$errors" 
                         :formAction="route('attendance_request.store',  $attendance->id)"/>
