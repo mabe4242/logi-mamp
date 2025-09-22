@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <x-user_header></x-user_header>
+    <x-user_header />
     <div class="content__wrapper">
         <div class="content">
             @php use App\Enums\AttendanceStatus; @endphp

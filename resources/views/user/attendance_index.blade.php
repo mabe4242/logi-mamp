@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <x-user_header></x-user_header>
+    <x-user_header />
     <div class="content">
         <div class="attendance__content">
             <div class="attendance__wrapper">
