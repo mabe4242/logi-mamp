@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\AttendanceStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\User;
@@ -43,14 +44,7 @@ class AttendanceController extends Controller
         $prevMonthUrl = route('admin.staff_attendance', ['id' => $user->id, 'month' => $months['prevMonth']]);
         $nextMonthUrl = route('admin.staff_attendance', ['id' => $user->id, 'month' => $months['nextMonth']]);
 
-        //！ここcompact関数で渡せよ!
-        return view('admin.staff_attendances', [
-            'user'          => $user,
-            'attendances'   => $attendances,
-            'month'         => $month,
-            'prevMonthUrl'  => $prevMonthUrl,
-            'nextMonthUrl'  => $nextMonthUrl,
-        ]);
+        return view('admin.staff_attendances', compact('user', 'attendances', 'month', 'prevMonthUrl', 'nextMonthUrl'));
     }
 
     public function show($id)
@@ -67,7 +61,7 @@ class AttendanceController extends Controller
         $dateCarbon = Carbon::parse($date);
         $attendance = Attendance::firstOrCreate(
             ['user_id' => $userId, 'date' => $dateCarbon->toDateString()],
-            ['status' => 0]
+            ['status' => AttendanceStatus::OFF]
         );
 
         return redirect()->route('admin.attendance.show', ['id' => $attendance->id]);

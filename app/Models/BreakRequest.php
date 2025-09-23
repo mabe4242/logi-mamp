@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class BreakRequest extends Model
 {
     use HasFactory;
+    
     use HasBreakFormatting;
 
     protected $fillable = [

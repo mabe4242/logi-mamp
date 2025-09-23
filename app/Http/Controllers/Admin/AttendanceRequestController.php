@@ -21,13 +21,8 @@ class AttendanceRequestController extends Controller
 
     public function show($id)
     {
-        // 申請IDから取得
         $attendanceRequest = AttendanceRequest::with(['user', 'breakRequests'])->findOrFail($id);
-
-        // 元の勤怠データ
         $attendance = $attendanceRequest->attendance()->with('breaks')->first();
-
-        // break は Blade で使う
         $breaks = $attendanceRequest->breakRequests ?? $attendance->breaks;
 
         return view('admin.approve', compact('attendanceRequest', 'attendance', 'breaks'));

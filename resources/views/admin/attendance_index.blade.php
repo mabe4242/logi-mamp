@@ -14,12 +14,12 @@
                 <x-table :headers="['名前', '出勤', '退勤', '休憩', '合計', '詳細']">
                     @foreach ($attendances as $attendance)
                         <tr>
-                            <td class="attendance__deta">{{ $attendance->userName }}</td>
-                            <td class="attendance__deta">{{ $attendance->clock_in }}</td>
-                            <td class="attendance__deta">{{ $attendance->clock_out }}</td>
-                            <td class="attendance__deta">{{ $attendance->break }}</td>
-                            <td class="attendance__deta">{{ $attendance->total_work }}</td>
-                            <td class="attendance__deta">
+                            <td class="attendance__data">{{ $attendance->userName }}</td>
+                            <td class="attendance__data">{{ $attendance->clock_in }}</td>
+                            <td class="attendance__data">{{ $attendance->clock_out }}</td>
+                            <td class="attendance__data">{{ $attendance->break }}</td>
+                            <td class="attendance__data">{{ $attendance->total_work }}</td>
+                            <td class="attendance__data">
                                 <a class="attendance__detail" href="{{ route('admin.attendance.show', $attendance->id) }}">詳細</a>
                             </td>
                         </tr>
