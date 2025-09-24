@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\AttendanceStatus;
+use App\Enums\TableHeaders;
 use App\Models\Attendance;
 use App\Services\AttendanceFormatter;
 use App\Services\AttendanceService;
@@ -32,8 +33,10 @@ class AttendanceController extends Controller
         $months = CarbonCalc::getMonths($month);
         $prevMonthUrl = route('attendance.index', ['month' => $months['prevMonth']]);
         $nextMonthUrl = route('attendance.index', ['month' => $months['nextMonth']]);
+        $headers = TableHeaders::attendanceMonthly();
 
-        return view('user.attendance_index', compact('attendances', 'month', 'prevMonthUrl', 'nextMonthUrl'));
+        return view('user.attendance_index', compact('attendances', 'month', 'prevMonthUrl',
+            'nextMonthUrl', 'headers'));
     }
 
     public function create(Request $request)

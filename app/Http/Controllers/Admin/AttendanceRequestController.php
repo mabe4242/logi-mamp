@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\RequestStatus;
+use App\Enums\TableHeaders;
 use App\Http\Controllers\Controller;
 use App\Models\AttendanceRequest;
-use App\Enums\RequestStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -15,8 +16,9 @@ class AttendanceRequestController extends Controller
         $status = $request->query('status', RequestStatus::PENDING);
         $attendanceRequests = AttendanceRequest::with('user')
             ->status($status)->latestOrder()->get();
+        $headers = TableHeaders::requests();
 
-        return view('admin.request_index', compact('attendanceRequests', 'status'));
+        return view('admin.request_index', compact('attendanceRequests', 'status', 'headers'));
     }
 
     public function show($id)
