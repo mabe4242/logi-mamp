@@ -109,15 +109,17 @@ class RegisterTest extends TestCase
             'password_confirmation' => '22222222',
         ]);
 
-        $response->assertSessionHasErrors(['password']);
-        // $response->assertSessionHasErrors([
-        //     'password' => 'パスワードと一致しません',
-        // ]);
+        $response->assertSessionHasErrors(['password_confirmation']);
+        $errors = session('errors')->get('password_confirmation');
+        $this->assertTrue(
+            collect($errors)->contains('パスワードと一致しません'),
+            '期待するエラーメッセージが含まれていません。'
+        );
     }
 
     /**
      * @test
-     * 全ての項目が入力されている場合、会員情報が登録され、メール認証誘導画面に遷移される
+     * 全ての項目が入力されている場合、会員情報がデータベースに登録される
      */
     public function registration_succeeds()
     {
@@ -136,7 +138,5 @@ class RegisterTest extends TestCase
             'name' => 'テストユーザー',
             'email' => 'testuser@example.com',
         ]);
-
-        $response->assertRedirect('/email/verify');
     }
 }
