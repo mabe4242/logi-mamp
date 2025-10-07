@@ -11,7 +11,10 @@ class UserAttendanceTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    /**
+     * @test
+     * 勤怠打刻画面に現在日時が正しく表示されていることを確認
+     */
     public function attendance_clock_test()
     {
         Carbon::setTestNow(Carbon::now());
