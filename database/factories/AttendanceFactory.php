@@ -57,4 +57,15 @@ class AttendanceFactory extends Factory
             ];
         });
     }
+
+    public function notWorking()
+    {
+        return $this->state(function () {
+            return [
+                'status' => AttendanceStatus::OFF,
+                'clock_in' => null,
+                'clock_out' => null,
+            ];
+        });
+    }
 }
