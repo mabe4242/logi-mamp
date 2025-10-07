@@ -53,6 +53,7 @@ class AttendanceCheckoutTest extends TestCase
      */
     public function check_out_time_on_attendance_index()
     {
+        /** @var \App\Models\User $user */
         $user = User::factory()->create();
         $this->actingAs($user);
 
