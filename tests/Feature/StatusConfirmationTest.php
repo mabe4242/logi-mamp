@@ -18,6 +18,7 @@ class StatusConfirmationTest extends TestCase
      */
     public function status_is_displayed_as_off()
     {
+        /** @var \App\Models\User $user */
         $user = User::factory()->create();
 
         Attendance::factory()->create([
@@ -37,6 +38,7 @@ class StatusConfirmationTest extends TestCase
      */
     public function status_is_displayed_as_working()
     {
+        /** @var \App\Models\User $user */
         $user = User::factory()->create();
 
         Attendance::factory()->working()->create([
@@ -54,6 +56,7 @@ class StatusConfirmationTest extends TestCase
      */
     public function status_is_displayed_as_break()
     {
+        /** @var \App\Models\User $user */
         $user = User::factory()->create();
 
         Attendance::factory()->break()->create([
@@ -71,6 +74,7 @@ class StatusConfirmationTest extends TestCase
      */
     public function status_is_displayed_as_finished()
     {
+        /** @var \App\Models\User $user */
         $user = User::factory()->create();
 
         Attendance::factory()->finished()->create([

@@ -77,6 +77,7 @@ class LoginTest extends TestCase
      */
     public function user_can_login_with_correct_credentials()
     {
+        /** @var \App\Models\User $user */
         $user = User::factory()->create([
             'password' => bcrypt($password = 'password123'),
         ]);

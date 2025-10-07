@@ -77,6 +77,7 @@ class AdminLoginTest extends TestCase
      */
     public function admin_can_login_with_correct_credentials()
     {
+        /** @var \App\Models\Admin $admin */
         $admin = Admin::factory()->create([
             'password' => bcrypt($password = '11111111'),
         ]);
