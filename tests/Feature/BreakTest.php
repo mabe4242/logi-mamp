@@ -161,55 +161,48 @@ class BreakTest extends TestCase
      * @test
      * 休憩時間が勤怠一覧画面で確認できる
      */
-    // public function break_record_on_attendance_index()
-    // {
-    //     /** @var \App\Models\User $user */
-    //     $user = User::factory()->create();
-    //     $attendance = Attendance::factory()->create([
-    //         'user_id' => $user->id,
-    //         'status' => AttendanceStatus::WORKING,
-    //         'clock_in' => Carbon::now()->subHours(3),
-    //         'date' => Carbon::today(),
-    //     ]);
+    public function break_record_on_attendance_index()
+    {
+        /** @var \App\Models\User $user */
+        $user = User::factory()->create();
+        $attendance = Attendance::factory()->create([
+            'user_id' => $user->id,
+            'status' => AttendanceStatus::WORKING,
+            'clock_in' => Carbon::now()->subHours(3),
+            'date' => Carbon::today(),
+        ]);
 
-    //     $this->actingAs($user);
+        $this->actingAs($user);
 
-    //     // ③ 休憩開始処理
-    //     $response = $this->post(route('break.start', ['id' => $attendance->id]));
-    //     $response->assertStatus(302);
+        // 休憩開始
+        $response = $this->post(route('break.start', ['id' => $attendance->id]));
+        $response->assertStatus(302);
 
-    //     $this->assertDatabaseHas('breaks', [
-    //         'attendance_id' => $attendance->id,
-    //         'break_end' => null,
-    //     ]);
+        $this->assertDatabaseHas('breaks', [
+            'attendance_id' => $attendance->id,
+            'break_end' => null,
+        ]);
 
-    //     // ④ 休憩終了処理（10分後に戻る想定）
-    //     $break = UserBreak::where('attendance_id', $attendance->id)->first();
-    //     $break->update(['break_start' => Carbon::now()->subMinutes(10)]);
+        // 休憩終了（10分後に戻る）
+        $break = UserBreak::where('attendance_id', $attendance->id)->first();
+        $break->update(['break_start' => Carbon::now()->subMinutes(10)]);
 
-    //     $response = $this->post(route('break.end', ['id' => $attendance->id]));
-    //     $response->assertStatus(302);
+        $response = $this->post(route('break.end', ['id' => $attendance->id]));
+        $response->assertStatus(302);
 
-    //     $this->assertDatabaseMissing('breaks', [
-    //         'attendance_id' => $attendance->id,
-    //         'break_end' => null,
-    //     ]);
+        $this->assertDatabaseMissing('breaks', [
+            'attendance_id' => $attendance->id,
+            'break_end' => null,
+        ]);
 
-    //     // break_endが登録されていることを確認
-    //     $break->refresh();
-    //     $this->assertNotNull($break->break_end);
+        $break->refresh();
+        $this->assertNotNull($break->break_end);
+        $this->post(route('attendance.checkout'));
 
+        $response = $this->get(route('attendance.index'));
 
-
-    //     //ここで退勤処理いれる！
-
-
-
-    //     // 勤怠一覧画面にアクセス
-    //     $response = $this->get(route('attendance.index'));
-
-    //     // 勤怠一覧のHTMLに休憩時間が表示されていることを確認（10分）
-    //     $expectedBreakTime = '00:10';
-    //     $response->assertSee($expectedBreakTime);
-    // }
+        // 勤怠一覧画面に休憩時間が表示されていることを確認（10分）
+        $expectedBreakTime = '0:10';
+        $response->assertSee($expectedBreakTime);
+    }
 }
