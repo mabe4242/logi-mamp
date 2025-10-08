@@ -104,20 +104,20 @@ class AttendanceDetailGetTest extends TestCase
         $user = User::factory()->create();
         $attendance = Attendance::factory()->create([
             'user_id' => $user->id,
-            'clock_in' => '2025-10-08 09:00:00',
-            'clock_out' => '2025-10-08 18:00:00',
+            'clock_in' => '2025-10-01 09:00:00',
+            'clock_out' => '2025-10-01 18:00:00',
         ]);
 
         $break1 = UserBreak::factory()->create([
             'attendance_id' => $attendance->id,
-            'break_start' => '2025-10-08 12:00:00',
-            'break_end' => '2025-10-08 12:30:00',
+            'break_start' => '2025-10-01 12:00:00',
+            'break_end' => '2025-10-01 12:30:00',
         ]);
 
         $break2 = UserBreak::factory()->create([
             'attendance_id' => $attendance->id,
-            'break_start' => '2025-10-08 15:00:00',
-            'break_end' => '2025-10-08 15:15:00',
+            'break_start' => '2025-10-01 15:00:00',
+            'break_end' => '2025-10-01 15:15:00',
         ]);
 
         $this->actingAs($user);

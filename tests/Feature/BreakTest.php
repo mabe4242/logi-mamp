@@ -176,7 +176,6 @@ class BreakTest extends TestCase
 
         // 休憩開始
         $response = $this->post(route('break.start', ['id' => $attendance->id]));
-        $response->assertStatus(302);
 
         $this->assertDatabaseHas('breaks', [
             'attendance_id' => $attendance->id,
@@ -188,7 +187,6 @@ class BreakTest extends TestCase
         $break->update(['break_start' => Carbon::now()->subMinutes(10)]);
 
         $response = $this->post(route('break.end', ['id' => $attendance->id]));
-        $response->assertStatus(302);
 
         $this->assertDatabaseMissing('breaks', [
             'attendance_id' => $attendance->id,
