@@ -13,7 +13,7 @@ class UserAttendanceTest extends TestCase
 
     /**
      * @test
-     * 勤怠打刻画面に現在日時が正しく表示されていることを確認
+     * 現在の日時情報がUIと同じ形式で出力されている
      */
     public function attendance_clock_test()
     {

@@ -16,7 +16,7 @@ class AttendanceRequestTest extends TestCase
 
     /**
      * @test
-     * 出勤時間が退勤時間より後になっている場合、バリデーションエラーメッセージが表示される
+     * 出勤時間が退勤時間より後になっている場合、エラーメッセージが表示される
      */
     public function error_when_clock_in_is_after_clock_out()
     {
@@ -49,7 +49,7 @@ class AttendanceRequestTest extends TestCase
 
     /**
      * @test
-     * 休憩開始時間が退勤時間より後になっている場合、バリデーションエラーメッセージが表示される
+     * 休憩開始時間が退勤時間より後になっている場合、エラーメッセージが表示される
      */
     public function error_when_break_start_after_clock_out()
     {
@@ -86,7 +86,7 @@ class AttendanceRequestTest extends TestCase
 
     /**
      * @test
-     * 休憩終了時間が退勤時間より後になっている場合、バリデーションエラーメッセージが表示される
+     * 休憩終了時間が退勤時間より後になっている場合、エラーメッセージが表示される
      */
     public function error_when_break_end_after_clock_out()
     {
@@ -123,7 +123,7 @@ class AttendanceRequestTest extends TestCase
 
     /**
      * @test
-     * 備考欄が未入力の場合、バリデーションエラーメッセージが表示される
+     * 備考欄が未入力の場合のエラーメッセージが表示される
      */
     public function error_when_reason_is_empty()
     {
@@ -160,7 +160,7 @@ class AttendanceRequestTest extends TestCase
 
     /**
      * @test
-     * 一般ユーザーの修正申請処理が実行され、管理者画面に表示される
+     * 修正申請処理が実行される
      */
     public function submit_request_and_admin_can_view_it()
     {
@@ -216,7 +216,7 @@ class AttendanceRequestTest extends TestCase
 
     /**
      * @test
-     * 申請一覧画面の「承認待ち」にログインユーザーの申請が全て表示される
+     * 「承認待ち」にログインユーザーが行った申請が全て表示されていること
      */
     public function pending_requests_on_index()
     {
@@ -264,7 +264,7 @@ class AttendanceRequestTest extends TestCase
 
     /**
      * @test
-     * 管理者が承認した修正申請が申請一覧画面の「承認済み」に全て表示される
+     * 「承認済み」に管理者が承認した修正申請が全て表示されている
      */
     public function approved_requests_on_index()
     {
@@ -340,7 +340,7 @@ class AttendanceRequestTest extends TestCase
 
     /**
      * @test
-     * 申請一覧画面の「詳細」を押下すると勤怠詳細画面に遷移する
+     * 各申請の「詳細」を押下すると勤怠詳細画面に遷移する
      */
     public function attendance_detail_from_request_list()
     {

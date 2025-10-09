@@ -15,7 +15,7 @@ class AttendanceStartTest extends TestCase
 
     /**
      * @test
-     * 勤務外のユーザーは出勤ボタンを押すとステータスが出勤中になる
+     * 出勤ボタンが正しく機能する
      */
     public function attendance_start_test()
     {
@@ -47,7 +47,7 @@ class AttendanceStartTest extends TestCase
 
     /**
      * @test
-     * 出勤は一日一回のみ、退勤済ユーザーには出勤ボタンが表示されない
+     * 出勤は一日一回のみできる
      */
     public function only_one_start_test()
     {

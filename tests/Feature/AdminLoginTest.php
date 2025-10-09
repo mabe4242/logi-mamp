@@ -12,7 +12,7 @@ class AdminLoginTest extends TestCase
 
     /**
      * @test
-     * メールアドレスが入力されていない場合、バリデーションメッセージが表示される
+     * メールアドレスが未入力の場合、バリデーションメッセージが表示される
      */
     public function email_is_required_for_login()
     {
@@ -32,7 +32,7 @@ class AdminLoginTest extends TestCase
 
     /**
      * @test
-     * パスワードが入力されていない場合、バリデーションメッセージが表示される
+     * パスワードが未入力の場合、バリデーションメッセージが表示される
      */
     public function password_is_required_for_login()
     {
@@ -52,7 +52,7 @@ class AdminLoginTest extends TestCase
 
     /**
      * @test
-     * 入力情報が間違っている場合、バリデーションメッセージが表示される
+     * 登録内容と一致しない場合、バリデーションメッセージが表示される
      */
     public function invalid_login_credentials_show_error_message()
     {

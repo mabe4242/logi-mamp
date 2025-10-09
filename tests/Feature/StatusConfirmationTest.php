@@ -14,7 +14,7 @@ class StatusConfirmationTest extends TestCase
 
     /**
      * @test
-     * 勤務外ステータスが正しく表示されることを確認する
+     * 勤務外の場合、勤怠ステータスが正しく表示される
      */
     public function status_is_displayed_as_off()
     {
@@ -34,7 +34,7 @@ class StatusConfirmationTest extends TestCase
 
     /**
      * @test
-     * 出勤中ステータスが正しく表示されることを確認する
+     * 出勤中の場合、勤怠ステータスが正しく表示される
      */
     public function status_is_displayed_as_working()
     {
@@ -52,7 +52,7 @@ class StatusConfirmationTest extends TestCase
 
     /**
      * @test
-     * 休憩中ステータスが正しく表示されることを確認する
+     * 休憩中の場合、勤怠ステータスが正しく表示される
      */
     public function status_is_displayed_as_break()
     {
@@ -70,7 +70,7 @@ class StatusConfirmationTest extends TestCase
 
     /**
      * @test
-     * 退勤済みステータスが正しく表示されることを確認する
+     * 退勤済の場合、勤怠ステータスが正しく表示される
      */
     public function status_is_displayed_as_finished()
     {

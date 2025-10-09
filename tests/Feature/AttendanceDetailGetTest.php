@@ -15,7 +15,7 @@ class AttendanceDetailGetTest extends TestCase
 
     /**
      * @test
-     * 勤怠詳細画面で名前がログインユーザーの氏名になっていることを確認
+     * 勤怠詳細画面の「名前」がログインユーザーの氏名になっている
      */
     public function user_name_on_attendance_detail()
     {
@@ -38,7 +38,7 @@ class AttendanceDetailGetTest extends TestCase
 
     /**
      * @test
-     * 勤怠詳細画面で日付が選択した日付になっていることを確認
+     * 勤怠詳細画面の「日付」が選択した日付になっている
      */
     public function selected_date_on_attendance_detail()
     {
@@ -61,7 +61,7 @@ class AttendanceDetailGetTest extends TestCase
 
     /**
      * @test
-     *「出勤・退勤」に記されている時間がログインユーザーの打刻と一致していることを確認
+     *「出勤・退勤」にて記されている時間がログインユーザーの打刻と一致している
      */
     public function correct_clock_in_and_out_times()
     {
@@ -96,7 +96,7 @@ class AttendanceDetailGetTest extends TestCase
 
     /**
      * @test
-     * 勤怠詳細画面で「休憩」にて記されている時間がユーザーの打刻と一致している
+     * 「休憩」にて記されている時間がログインユーザーの打刻と一致している
      */
     public function correct_break_times()
     {

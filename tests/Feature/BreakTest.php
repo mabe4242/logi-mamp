@@ -16,7 +16,7 @@ class BreakTest extends TestCase
 
     /**
      * @test
-     * 出勤中の場合に休憩ボタンが正しく機能する
+     * 休憩ボタンが正しく機能する
      */
     public function break_start_test()
     {
@@ -159,7 +159,7 @@ class BreakTest extends TestCase
 
     /**
      * @test
-     * 休憩時間が勤怠一覧画面で確認できる
+     * 休憩時刻が勤怠一覧画面で確認できる
      */
     public function break_record_on_attendance_index()
     {

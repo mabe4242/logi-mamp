@@ -16,7 +16,7 @@ class AttendanceIndexTest extends TestCase
 
     /** 
      * @test 
-     * 勤怠一覧ページで、自分の勤怠情報がすべて表示されることを確認
+     * 自分が行った勤怠情報が全て表示されている
      */
     public function all_attendance_records_on_index()
     {
@@ -67,7 +67,7 @@ class AttendanceIndexTest extends TestCase
 
     /**
      * @test
-     * 勤怠一覧ページに遷移した際に現在の月が表示されることを確認
+     * 勤怠一覧画面に遷移した際に現在の月が表示される
      */
     public function current_month_on_index()
     {
@@ -84,7 +84,7 @@ class AttendanceIndexTest extends TestCase
 
     /**
      * @test
-     * 勤怠一覧ページで「前月」を押下した時に、前月の勤怠情報が表示されることを確認
+     * 「前月」を押下した時に表示月の前月の情報が表示される
      */
     public function previous_month_on_index()
     {
@@ -139,7 +139,7 @@ class AttendanceIndexTest extends TestCase
 
     /**
      * @test
-     * 勤怠一覧ページで「翌月」を押下した時に、翌月の勤怠情報が表示されることを確認
+     * 「翌月」を押下した時に表示月の前月の情報が表示される
      */
     public function next_month_on_index()
     {
@@ -193,7 +193,7 @@ class AttendanceIndexTest extends TestCase
 
     /**
      * @test
-     * 勤怠一覧ページの「詳細」を押下すると、その日の勤怠詳細画面に遷移することを確認
+     * 「詳細」を押下すると、その日の勤怠詳細画面に遷移する
      */
     public function attendance_detail_page_test()
     {

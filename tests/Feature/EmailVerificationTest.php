@@ -14,7 +14,7 @@ class EmailVerificationTest extends TestCase
 
     /**
      * @test
-     * 会員登録後、認証メールが送信されることを確認
+     * 会員登録後、認証メールが送信される
      */
     public function verification_email_registration()
     {
@@ -40,7 +40,7 @@ class EmailVerificationTest extends TestCase
 
     /**
      * @test
-     * メール認証誘導画面で「認証はこちらから」ボタンを押下するとmailhogに遷移する
+     * メール認証誘導画面で「認証はこちらから」ボタンを押下するとメール認証サイトに遷移する
      */
     public function mailhog_is_accessible_for_verify_email_page()
     {
@@ -85,7 +85,7 @@ class EmailVerificationTest extends TestCase
 
     /**
      * @test
-     * メールの認証を完了すると、勤怠登録画面に遷移する
+     * メール認証サイトのメール認証を完了すると、勤怠登録画面に遷移する
      */
     public function verify_email_and_redirect_to_attendance()
     {

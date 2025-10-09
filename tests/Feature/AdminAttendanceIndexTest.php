@@ -15,7 +15,7 @@ class AdminAttendanceIndexTest extends TestCase
 
     /**
      * @test
-     * その日の全ユーザーの勤怠情報が正確に確認できる
+     * その日になされた全ユーザーの勤怠情報が正確に確認できる
      */
     public function admin_can_view_all_attendance()
     {
@@ -57,7 +57,7 @@ class AdminAttendanceIndexTest extends TestCase
 
     /**
      * @test
-     * 勤怠一覧画面(日次)に遷移した際に現在の日付が表示される
+     * 遷移した際に現在の日付が表示される
      */
     public function current_date_test()
     {

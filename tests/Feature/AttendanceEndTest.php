@@ -15,7 +15,7 @@ class AttendanceCheckoutTest extends TestCase
 
     /**
      * @test
-     * 勤務中のユーザーは退勤ボタンを押すとステータスが退勤済になる
+     * 退勤ボタンが正しく機能する
      */
     public function checkout_successfully()
     {

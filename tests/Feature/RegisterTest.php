@@ -11,7 +11,7 @@ class RegisterTest extends TestCase
 
     /**
      * @test
-     * 名前が入力されていない場合、バリデーションメッセージが表示される
+     * 名前が未入力の場合、バリデーションメッセージが表示される
      */
     public function name_is_required_on_registration()
     {
@@ -32,7 +32,7 @@ class RegisterTest extends TestCase
 
     /**
      * @test
-     * メールアドレスが入力されていない場合、バリデーションメッセージが表示される
+     * メールアドレスが未入力の場合、バリデーションメッセージが表示される
      */
     public function email_is_required_on_registration()
     {
@@ -53,28 +53,7 @@ class RegisterTest extends TestCase
 
     /**
      * @test
-     * パスワードが入力されていない場合、バリデーションメッセージが表示される
-     */
-    public function password_is_required_on_registration()
-    {
-        $response = $this->get('/register');
-        $response->assertStatus(200);
-
-        $response = $this->post('/register', [
-            'name' => 'テストユーザー',
-            'email' => 'test@example.com',
-            'password' => '',
-            'password_confirmation' => '',
-        ]);
-
-        $response->assertSessionHasErrors([
-            'password' => 'パスワードを入力してください',
-        ]);
-    }
-
-    /**
-     * @test
-     * パスワードが7文字以下の場合、バリデーションメッセージが表示される
+     * パスワードが8文字未満の場合、バリデーションメッセージが表示される
      */
     public function password_must_be_at_least_8_characters()
     {
@@ -95,7 +74,7 @@ class RegisterTest extends TestCase
 
     /**
      * @test
-     * パスワードが確認用パスワードと一致しない場合、バリデーションメッセージが表示される
+     * パスワードが一致しない場合、バリデーションメッセージが表示される
      */
     public function password_and_password_confirmation_must_match()
     {
@@ -119,7 +98,28 @@ class RegisterTest extends TestCase
 
     /**
      * @test
-     * 全ての項目が入力されている場合、会員情報がデータベースに登録される
+     * パスワードが未入力の場合、バリデーションメッセージが表示される
+     */
+    public function password_is_required_on_registration()
+    {
+        $response = $this->get('/register');
+        $response->assertStatus(200);
+
+        $response = $this->post('/register', [
+            'name' => 'テストユーザー',
+            'email' => 'test@example.com',
+            'password' => '',
+            'password_confirmation' => '',
+        ]);
+
+        $response->assertSessionHasErrors([
+            'password' => 'パスワードを入力してください',
+        ]);
+    }
+
+    /**
+     * @test
+     * フォームに内容が入力されていた場合、データが正常に保存される
      */
     public function registration_succeeds()
     {
