@@ -378,13 +378,15 @@ class AttendanceRequestTest extends TestCase
 
         $attendanceRequest = $attendance->attendanceRequests()->latest()->first();
 
-        // 「詳細」ページへのリンクを確認して遷移
-        $detailResponse = $this->get(route('attendance.detail', [
+        $detailUrl = route('attendance.detail', [
             'id' => $attendanceRequest->attendance_id,
             'request_id' => $attendanceRequest->id,
             'from' => 'request_list'
-        ]));
+        ]);
+        $listResponse->assertSee($detailUrl);
 
+        // 「詳細」から勤怠詳細画面に遷移
+        $detailResponse = $this->get($detailUrl);
         $detailResponse->assertStatus(200);
         $detailResponse->assertSee($user->name);
         $detailResponse->assertSee('勤怠詳細');

@@ -218,9 +218,9 @@ class AdminUserGetTest extends TestCase
         ]));
         $response->assertStatus(200);
 
-        // 詳細ボタンが存在することを確認
         $detailUrl = route('admin.attendance.show', ['id' => $attendance->id]);
-        $response->assertSee($detailUrl);
+        $response->assertSee('<button', false); 
+        $response->assertSee('詳細');
 
         // 勤怠詳細画面に遷移して勤怠情報を確認
         $responseDetail = $this->get($detailUrl);

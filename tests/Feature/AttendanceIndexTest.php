@@ -122,6 +122,9 @@ class AttendanceIndexTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee($currentMonth->format('Y/m'));
 
+        $prevMonthUrl = route('attendance.index', ['month' => $previousMonth->format('Y/m')]);
+        $response->assertSee($prevMonthUrl);
+
         // 「前月」ボタン押下
         $responsePrev = $this->actingAs($user)->get(route('attendance.index', [
             'month' => $previousMonth->format('Y/m'),
@@ -177,6 +180,9 @@ class AttendanceIndexTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee($currentMonth->format('Y/m'));
 
+        $nextMonthUrl = route('attendance.index', ['month' => $nextMonth->format('Y/m')]);
+        $response->assertSee($nextMonthUrl);
+
         $responseNext = $this->actingAs($user)->get(route('attendance.index', [
             'month' => $nextMonth->format('Y/m'),
         ]));
@@ -217,9 +223,11 @@ class AttendanceIndexTest extends TestCase
         $response->assertStatus(200);
 
         $detailUrl = route('attendance.detail', ['id' => $attendance->id]);
-        $responseDetail = $this->actingAs($user)->get($detailUrl);
+        $response->assertSee('<button', false); 
+        $response->assertSee('詳細');
 
         // 勤怠詳細ページが表示されることを確認
+        $responseDetail = $this->actingAs($user)->get($detailUrl);
         $responseDetail->assertStatus(200)
             ->assertSee('勤怠詳細')
             ->assertSee(Carbon::now()->format('n月j日'))

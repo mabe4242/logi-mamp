@@ -84,6 +84,7 @@ class AdminAttendanceIndexTest extends TestCase
         ]);
 
         $yesterday = Carbon::yesterday()->startOfDay();
+        $today = Carbon::today()->startOfDay();
         Attendance::factory()->create([
             'user_id' => $user->id,
             'date' => $yesterday,
@@ -94,6 +95,16 @@ class AdminAttendanceIndexTest extends TestCase
         /** @var \App\Models\Admin $admin */
         $admin = Admin::factory()->create();
         $this->actingAs($admin, 'admin');
+
+        $response = $this->get(route('admin.attendance.index', [
+            'date' => $today->toDateString(),
+        ]));
+        $response->assertStatus(200)
+                ->assertSee($today->isoFormat('YYYY年M月D日'));
+
+        $prevDayUrl = route('admin.attendance.index', ['date' => $yesterday->toDateString()]);
+        $response->assertSee($prevDayUrl);
+
         $response = $this->get(route('admin.attendance.index', [
             'date' => $yesterday->toDateString(),
         ]));
@@ -135,6 +146,9 @@ class AdminAttendanceIndexTest extends TestCase
             'date' => $baseDate->toDateString(),
         ]));
         $response->assertStatus(200);
+
+        $nextDayUrl = route('admin.attendance.index', ['date' => $nextDate->toDateString()]);
+        $response->assertSee($nextDayUrl);
 
         // 基点の翌日の勤怠一覧画面にアクセスし、データが表示されることを確認
         $responseNext = $this->get(route('admin.attendance.index', [
