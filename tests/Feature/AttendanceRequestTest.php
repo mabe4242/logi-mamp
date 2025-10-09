@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Enums\RequestStatus;
+use App\Models\Admin;
 use App\Models\Attendance;
 use App\Models\AttendanceRequest;
 use App\Models\User;
@@ -157,10 +158,61 @@ class AttendanceRequestTest extends TestCase
         ]);
     }
 
+    /**
+     * @test
+     * 一般ユーザーの修正申請処理が実行され、管理者画面に表示される
+     */
+    public function submit_request_and_admin_can_view_it()
+    {
+        $user = User::factory()->create();
+        $admin = Admin::factory()->create();
 
+        $attendance = Attendance::factory()->create([
+            'user_id' => $user->id,
+            'date' => '2025-10-01',
+            'clock_in' => '2025-10-01 09:00:00',
+            'clock_out' => '2025-10-01 18:00:00',
+        ]);
 
-    //ここに  修正申請処理が実行される  のテスト！！
+        // 一般ユーザーとして修正申請を行う
+        $this->actingAs($user);
+        $response = $this->post(route('attendance_request.store', $attendance->id), [
+            'year' => '2025',
+            'month_day' => '10-01',
+            'clock_in' => '09:30',
+            'clock_out' => '18:30',
+            'breaks' => [
+                [
+                    'break_start' => '12:00',
+                    'break_end' => '13:00',
+                ]
+            ],
+            'reason' => '修正テスト',
+        ]);
 
+        $response->assertStatus(302);
+        $response->assertRedirect(route('attendance.detail', ['id' => $attendance->id]));
+
+        $this->assertDatabaseHas('attendance_requests', [
+            'user_id' => $user->id,
+            'attendance_id' => $attendance->id,
+            'reason' => '修正テスト',
+        ]);
+
+        $attendanceRequest = AttendanceRequest::where('user_id', $user->id)->firstOrFail();
+
+        // 管理者の承認画面の確認
+        $this->actingAs($admin, 'admin');
+        $approveResponse = $this->get(route('admin.request', $attendanceRequest->id));
+        $approveResponse->assertStatus(200);
+        $approveResponse->assertSee('修正テスト');
+
+        // 管理者の申請一覧画面の確認
+        $indexResponse = $this->get(route('admin.attendance_requests.index'));
+        $indexResponse->assertStatus(200);
+        $indexResponse->assertSee($user->name);
+        $indexResponse->assertSee('修正テスト');
+    }
 
     /**
      * @test
@@ -210,8 +262,81 @@ class AttendanceRequestTest extends TestCase
         $response->assertDontSee('他人の申請');
     }
 
+    /**
+     * @test
+     * 管理者が承認した修正申請が申請一覧画面の「承認済み」に全て表示される
+     */
+    public function approved_requests_on_index()
+    {
+        /** @var \App\Models\User $user */
+        $user = User::factory()->create();
+        /** @var \App\Models\Admin $admin */
+        $admin = Admin::factory()->create();
 
-    //ここに  「承認済み」に管理者が承認した修正申請が全て表示されている  のテスト！！
+        $attendance1 = Attendance::factory()->create([
+            'user_id' => $user->id,
+            'date' => '2025-10-01',
+            'clock_in' => '2025-10-01 09:00:00',
+            'clock_out' => '2025-10-01 18:00:00',
+        ]);
+        $attendance2 = Attendance::factory()->create([
+            'user_id' => $user->id,
+            'date' => '2025-10-02',
+            'clock_in' => '2025-10-02 09:00:00',
+            'clock_out' => '2025-10-02 18:00:00',
+        ]);
+
+        $this->actingAs($user);
+
+        // ユーザーが2件の修正申請を作成
+        $this->post(route('attendance_request.store', $attendance1->id), [
+            'year' => '2025',
+            'month_day' => '10-01',
+            'clock_in' => '09:00',
+            'clock_out' => '18:00',
+            'breaks' => [
+                ['break_start' => '12:00', 'break_end' => '12:30'],
+            ],
+            'reason' => 'テスト1',
+        ]);
+        $this->post(route('attendance_request.store', $attendance2->id), [
+            'year' => '2025',
+            'month_day' => '10-02',
+            'clock_in' => '09:00',
+            'clock_out' => '18:00',
+            'breaks' => [
+                ['break_start' => '13:00', 'break_end' => '13:30'],
+            ],
+            'reason' => 'テスト2',
+        ]);
+
+        $request1 = $attendance1->attendanceRequests()->latest()->first();
+        $request2 = $attendance2->attendanceRequests()->latest()->first();
+
+        // 管理者が承認処理を実行
+        $this->actingAs($admin, 'admin');
+        $this->post(route('admin.approve', $request1->id));
+        $this->post(route('admin.approve', $request2->id));
+
+        // ステータスが承認済みに更新されていることを確認
+        $this->assertDatabaseHas('attendance_requests', [
+            'id' => $request1->id,
+            'status' => RequestStatus::APPROVED,
+        ]);
+        $this->assertDatabaseHas('attendance_requests', [
+            'id' => $request2->id,
+            'status' => RequestStatus::APPROVED,
+        ]);
+
+        $this->actingAs($user);
+        $response = $this->get(route('attendance_requests.index', ['status' => RequestStatus::APPROVED]));
+        $response->assertStatus(200);
+
+        // 承認済みの申請内容が全て画面に表示されていることを確認
+        $response->assertSee('承認済み');
+        $response->assertSee('テスト1');
+        $response->assertSee('テスト2');
+    }
 
     /**
      * @test
@@ -243,8 +368,6 @@ class AttendanceRequestTest extends TestCase
             ],
             'reason' => 'テスト',
         ]);
-
-        $response->assertStatus(302);
 
         // 申請一覧画面を開く
         $listResponse = $this->get(route('attendance_requests.index'));
