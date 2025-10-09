@@ -21,13 +21,4 @@ class UserBreakFactory extends Factory
             'break_end' => $end,
         ];
     }
-
-    public function ongoing()
-    {
-        return $this->state(function (array $attributes) {
-            return [
-                'break_end' => null,
-            ];
-        });
-    }
 }
