@@ -164,7 +164,9 @@ class AttendanceRequestTest extends TestCase
      */
     public function submit_request_and_admin_can_view_it()
     {
+        /** @var \App\Models\User $user */
         $user = User::factory()->create();
+        /** @var \App\Models\Admin $admin */
         $admin = Admin::factory()->create();
 
         $attendance = Attendance::factory()->create([
@@ -222,6 +224,7 @@ class AttendanceRequestTest extends TestCase
     {
         /** @var \App\Models\User $user */
         $user = User::factory()->create();
+        /** @var \App\Models\User $otherUser */
         $otherUser = User::factory()->create();
 
         // ログインユーザーの勤怠データ

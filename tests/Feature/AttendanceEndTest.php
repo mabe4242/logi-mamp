@@ -5,9 +5,9 @@ namespace Tests\Feature;
 use App\Models\User;
 use App\Models\Attendance;
 use App\Enums\AttendanceStatus;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Carbon\Carbon;
 
 class AttendanceCheckoutTest extends TestCase
 {
