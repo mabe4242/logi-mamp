@@ -28,28 +28,49 @@
 ## ER図
 ![ER図](./er-diag.png)  
 
-
-
 ## メール認証につきまして
 このプロジェクトでは Mailhog を利用してメール送信の確認を行います。  
 docker-compose.yml に Mailhog コンテナを含めているため、以下のURLでメールを確認できます。
-[http://localhost:8025](http://localhost:8025)
+URL:[http://localhost:8025](http://localhost:8025)
 
 ユーザー登録をすると確認メールが送信されます。  
 メール認証誘導画面からMailhogのメール認証画面にアクセスして、認証してください。  
 認証メールの再送を行なった場合もこちらの画面からメールのご確認をお願いいたします。  
-URL: http://localhost:8025
-
+URL:[http://localhost:8025](http://localhost:8025)
 
 ## テスト時のデータベースにつきまして
 本番用DBとテスト用のDBを切り替えております。  
 テスト実行の際は上記の環境構築後に、`php artisan test`でテストの実行をご確認ください。
 
-
-
 ## ダミーデータにつきまして
+ダミーデータは、一般ユーザーを3人、管理者を1人生成します。  
+勤怠のデータはユーザー3人に対して、それぞれ30日分作成します。  
+db:seedした日の前日から30日分作成します。  
+例えば、10/12日にdb:seedすると、10/11から遡って30日分勤怠データが生成されます。  
+当日は3人ともまだ未出勤の状態です。  
 
+## テストアカウント
 
+一般ユーザー  
+-------------------------
+name: user1  
+email: user1@example.com  
+password: 11111111  
+-------------------------
+name: user2  
+email: user2@example.com  
+password: 11111111  
+-------------------------
+name: user3  
+email: user3@example.com  
+password: 11111111  
+-------------------------
+管理者  
+-------------------------
+name: test-admin  
+email: test@example.com  
+password: 11111111  
+-------------------------
 
 ## URL
 - 開発環境： [http://localhost/](http://localhost/)
