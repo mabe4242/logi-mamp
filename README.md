@@ -17,7 +17,8 @@
 6. `php artisan migrate`
 7. `php artisan migrate --env=testing`
 8. `php artisan db:seed`
-9. `exit`でPHPコンテナを抜けて、ターミナルで`mailhog`と入力し、Mailhogが立ち上がっていることをご確認ください。
+9. `exit`でPHPコンテナを抜けて、ターミナルで`mailhog`と入力し、Mailhogが立ち上がっていることをご確認ください。  
+10. ログインに使用するテストアカウント等の情報は、READMEの末尾にまとめてありますのでそちらをご確認ください。  
 
 ## 使用技術（実行環境）
 - PHP 8.1.33
