@@ -72,7 +72,7 @@ email: test@example.com
 password: 11111111  
 -------------------------
 
-## URL
+## ログイン情報URL
 - 開発環境： [http://localhost/](http://localhost/)
 - phpMyAdmin： [http://localhost:8080/](http://localhost:8080/)
 - 一般ユーザーログイン画面： [http://localhost/login](http://localhost/login)
