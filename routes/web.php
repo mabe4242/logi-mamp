@@ -9,6 +9,7 @@ use App\Http\Controllers\AttendanceRequestController as UserAttendanceRequestCon
 use App\Http\Controllers\BreakController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // ユーザー認証
@@ -27,11 +28,13 @@ Route::middleware(['auth:web', 'verified'])->group(function () {
 
 // 管理者認証
 Route::prefix('admin')->group(function () {
-    Route::get('/login', [LoginController::class, 'create'])->name('admin.loginForm');
-    Route::post('/login', [LoginController::class, 'login'])->name('admin.login');
-    Route::post('/logout', [LoginController::class, 'logout'])->name('admin.logout');
+    Route::middleware('guest:admin')->group(function () {
+        Route::get('/login', [LoginController::class, 'create'])->name('admin.loginForm');
+        Route::post('/login', [LoginController::class, 'login'])->name('admin.login');
+    });
 
     Route::middleware(['auth:admin'])->group(function () {
+        Route::post('/logout', [LoginController::class, 'logout'])->name('admin.logout');
         Route::get('/attendance/list', [AdminAttendanceController::class, 'index'])->name('admin.attendance.index');
         Route::get('/staff/list', [StaffController::class, 'index'])->name('admin.staff.index');
         Route::get('/stamp_correction_request/list', [AdminAttendanceRequestController::class, 'index'])->name('admin.attendance_requests.index');
@@ -59,5 +62,11 @@ Route::post('/email/verification-notification', function (Request $request) {
 })->middleware(['auth:web', 'throttle:6,1'])->name('verification.send');
 
 Route::get('/', function () {
-    return redirect('/attendance');
+    if (Auth::guard('web')->check()) {
+        return redirect('/attendance');
+    }
+    if (Auth::guard('admin')->check()) {
+        return redirect('/admin/attendance/list');
+    }
+    return redirect('/login');
 });
