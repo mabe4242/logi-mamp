@@ -8,6 +8,7 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Http\Requests\LoginRequest as FortifyLoginRequest;
@@ -49,15 +50,30 @@ class FortifyServiceProvider extends ServiceProvider
 
         $this->app->bind(FortifyLoginRequest::class, UserLoginRequest::class);
 
+        // Fortify::authenticateUsing(function (Request $request) {
+        //     $credentials = $request->only('email', 'password');
+
+        //     if ($request->role === 'admin') {
+        //         if (Auth::guard('admin')->attempt($credentials)) {
+        //             return Auth::guard('admin')->user();
+        //         }
+        //     } else {
+        //         if (Auth::guard('web')->attempt($credentials)) {
+        //             return Auth::guard('web')->user();
+        //         }
+        //     }
+        // });
         Fortify::authenticateUsing(function (Request $request) {
             $credentials = $request->only('email', 'password');
 
             if ($request->role === 'admin') {
                 if (Auth::guard('admin')->attempt($credentials)) {
+                    Session::put('last_guard', 'admin');
                     return Auth::guard('admin')->user();
                 }
             } else {
                 if (Auth::guard('web')->attempt($credentials)) {
+                    Session::put('last_guard', 'web');
                     return Auth::guard('web')->user();
                 }
             }
