@@ -32,7 +32,7 @@
             </a>
 
             <div class="nav__section">取引先</div>
-            <a class="nav__link {{ request()->is('suppliers*') ? 'is-active' : '' }}" href="#">
+            <a class="nav__link {{ request()->is('suppliers*') ? 'is-active' : '' }}" href="{{ route('suppliers.index') }}">
                 仕入先
             </a>
             <a class="nav__link {{ request()->is('customers*') ? 'is-active' : '' }}" href="#">
