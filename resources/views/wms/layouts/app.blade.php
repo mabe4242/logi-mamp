@@ -35,7 +35,7 @@
             <a class="nav__link {{ request()->is('suppliers*') ? 'is-active' : '' }}" href="{{ route('suppliers.index') }}">
                 仕入先
             </a>
-            <a class="nav__link {{ request()->is('customers*') ? 'is-active' : '' }}" href="#">
+            <a class="nav__link {{ request()->is('customers*') ? 'is-active' : '' }}" href="{{ route('customers.index') }}">
                 出荷先
             </a>
         </nav>

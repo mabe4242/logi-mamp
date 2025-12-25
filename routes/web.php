@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\AttendanceController as UserAttendanceController;
 use App\Http\Controllers\AttendanceRequestController as UserAttendanceRequestController;
 use App\Http\Controllers\BreakController;
+use App\Http\Controllers\Wms\CustomerController;
 use App\Http\Controllers\Wms\ProductController;
 use App\Http\Controllers\Wms\SupplierController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -49,6 +50,7 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::post('/stamp_correction_request/approve/{attendance_correct_request}', [AdminAttendanceRequestController::class, 'approve'])->name('admin.approve');
     Route::resource('products', ProductController::class);
     Route::resource('suppliers', SupplierController::class);
+    Route::resource('customers', CustomerController::class);
 });
 
 // ユーザー・管理者同一パスのルート
