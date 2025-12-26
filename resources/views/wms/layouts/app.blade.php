@@ -27,7 +27,7 @@
             <a class="nav__link {{ request()->is('stocks*') ? 'is-active' : '' }}" href="#">
                 在庫（商品単位）
             </a>
-            <a class="nav__link {{ request()->is('locations*') ? 'is-active' : '' }}" href="#">
+            <a class="nav__link {{ request()->is('locations*') ? 'is-active' : '' }}" href="{{ route('locations.index') }}">
                 保管場所
             </a>
 
