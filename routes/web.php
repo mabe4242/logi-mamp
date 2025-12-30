@@ -55,7 +55,9 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/stamp_correction_request/approve/{attendance_correct_request}', [AdminAttendanceRequestController::class, 'show'])->name('admin.request');
     Route::post('/stamp_correction_request/approve/{attendance_correct_request}', [AdminAttendanceRequestController::class, 'approve'])->name('admin.approve');
 
-    //WMS
+    
+    // WMSと勤怠管理アプリのルーティングを分けたい
+
     //マスタ登録系
     Route::resource('products', ProductController::class);
     Route::resource('suppliers', SupplierController::class);

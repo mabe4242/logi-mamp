@@ -8,6 +8,9 @@
                 <ul class="header-nav">
                     @if (Auth::check())
                         <li class="header-nav__item">
+                            <a class="header-nav__link btn" href="{{ route('stocks.index') }}">倉庫管理</a>
+                        </li>
+                        <li class="header-nav__item">
                             <a class="header-nav__link btn" href="{{ route('admin.attendance.index') }}">勤怠一覧</a>
                         </li>
                         <li class="header-nav__item">
