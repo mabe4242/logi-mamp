@@ -11,6 +11,8 @@ use App\Http\Controllers\Wms\CustomerController;
 use App\Http\Controllers\Wms\LocationController;
 use App\Http\Controllers\Wms\ProductController;
 use App\Http\Controllers\Wms\SupplierController;
+use App\Http\Controllers\Wms\InboundPlanController;
+use App\Http\Controllers\Wms\InboundPlanLineController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -49,10 +51,21 @@ Route::prefix('admin')->group(function () {
 Route::middleware(['auth:admin'])->group(function () {
     Route::get('/stamp_correction_request/approve/{attendance_correct_request}', [AdminAttendanceRequestController::class, 'show'])->name('admin.request');
     Route::post('/stamp_correction_request/approve/{attendance_correct_request}', [AdminAttendanceRequestController::class, 'approve'])->name('admin.approve');
+
+    //WMS
     Route::resource('products', ProductController::class);
     Route::resource('suppliers', SupplierController::class);
     Route::resource('customers', CustomerController::class);
     Route::resource('locations', LocationController::class);
+    Route::resource('inbound-plans', InboundPlanController::class);
+    Route::post('inbound-plans/{inbound_plan}/lines', [InboundPlanLineController::class, 'store'])
+        ->name('inbound-plans.lines.store');
+    Route::patch('inbound-plans/{inbound_plan}/lines/{line}', [InboundPlanLineController::class, 'update'])
+        ->name('inbound-plans.lines.update');
+    Route::delete('inbound-plans/{inbound_plan}/lines/{line}', [InboundPlanLineController::class, 'destroy'])
+        ->name('inbound-plans.lines.destroy');
+    Route::post('inbound-plans/{inbound_plan}/confirm', [InboundPlanController::class, 'confirm'])
+        ->name('inbound-plans.confirm');
 });
 
 // ユーザー・管理者同一パスのルート

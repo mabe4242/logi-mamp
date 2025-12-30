@@ -38,6 +38,11 @@
             <a class="nav__link {{ request()->is('customers*') ? 'is-active' : '' }}" href="{{ route('customers.index') }}">
                 出荷先
             </a>
+
+            <div class="nav__section">入荷</div>
+            <a class="nav__link {{ request()->is('inbound-plans*') ? 'is-active' : '' }}" href="{{ route('inbound-plans.index') }}">
+                入荷予定
+            </a>
         </nav>
 
         <div class="sidebar__footer">
