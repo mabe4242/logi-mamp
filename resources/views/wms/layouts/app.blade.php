@@ -24,8 +24,8 @@
             </a>
 
             <div class="nav__section">在庫</div>
-            <a class="nav__link {{ request()->is('stocks*') ? 'is-active' : '' }}" href="#">
-                在庫（商品単位）
+            <a class="nav__link {{ request()->is('stocks*') ? 'is-active' : '' }}" href="{{ route('stocks.index') }}">
+                在庫一覧
             </a>
             <a class="nav__link {{ request()->is('locations*') ? 'is-active' : '' }}" href="{{ route('locations.index') }}">
                 保管場所

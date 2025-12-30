@@ -15,6 +15,7 @@ use App\Http\Controllers\Wms\InboundPlanController;
 use App\Http\Controllers\Wms\InboundPlanLineController;
 use App\Http\Controllers\Wms\InboundReceiveController;
 use App\Http\Controllers\Wms\PutawayController;
+use App\Http\Controllers\Wms\StockController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -83,6 +84,11 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/putaway/{inbound_plan}', [PutawayController::class, 'show'])->name('putaway.show');
     Route::post('/putaway/{inbound_plan}/store', [PutawayController::class, 'store'])->name('putaway.store');
     Route::post('/putaway/{inbound_plan}/complete', [PutawayController::class, 'complete'])->name('putaway.complete');
+
+    // 在庫一覧
+    Route::get('/stocks', [StockController::class, 'index'])->name('stocks.index');
+
+    // 出荷作業はここに
 });
 
 // ユーザー・管理者同一パスのルート
