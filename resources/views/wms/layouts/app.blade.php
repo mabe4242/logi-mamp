@@ -43,6 +43,9 @@
             <a class="nav__link {{ request()->is('inbound-plans*') ? 'is-active' : '' }}" href="{{ route('inbound-plans.index') }}">
                 入荷予定
             </a>
+            <a class="nav__link {{ request()->is('receiving*') ? 'is-active' : '' }}" href="{{ route('receiving.index') }}">
+                入荷する
+            </a>
         </nav>
 
         <div class="sidebar__footer">

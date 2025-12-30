@@ -13,6 +13,7 @@ use App\Http\Controllers\Wms\ProductController;
 use App\Http\Controllers\Wms\SupplierController;
 use App\Http\Controllers\Wms\InboundPlanController;
 use App\Http\Controllers\Wms\InboundPlanLineController;
+use App\Http\Controllers\Wms\InboundReceiveController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -53,10 +54,13 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::post('/stamp_correction_request/approve/{attendance_correct_request}', [AdminAttendanceRequestController::class, 'approve'])->name('admin.approve');
 
     //WMS
+    //マスタ登録系
     Route::resource('products', ProductController::class);
     Route::resource('suppliers', SupplierController::class);
     Route::resource('customers', CustomerController::class);
     Route::resource('locations', LocationController::class);
+
+    // ① 入荷予定
     Route::resource('inbound-plans', InboundPlanController::class);
     Route::post('inbound-plans/{inbound_plan}/lines', [InboundPlanLineController::class, 'store'])
         ->name('inbound-plans.lines.store');
@@ -66,6 +70,12 @@ Route::middleware(['auth:admin'])->group(function () {
         ->name('inbound-plans.lines.destroy');
     Route::post('inbound-plans/{inbound_plan}/confirm', [InboundPlanController::class, 'confirm'])
         ->name('inbound-plans.confirm');
+
+    // ② 入荷（検品）
+    Route::get('/receiving', [InboundReceiveController::class, 'index'])->name('receiving.index');
+    Route::get('/receiving/{inbound_plan}', [InboundReceiveController::class, 'show'])->name('receiving.show');
+    Route::post('/receiving/{inbound_plan}/scan', [InboundReceiveController::class, 'scan'])->name('receiving.scan');
+    Route::post('/receiving/{inbound_plan}/finish', [InboundReceiveController::class, 'finish'])->name('receiving.finish');
 });
 
 // ユーザー・管理者同一パスのルート
