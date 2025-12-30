@@ -14,6 +14,7 @@ use App\Http\Controllers\Wms\SupplierController;
 use App\Http\Controllers\Wms\InboundPlanController;
 use App\Http\Controllers\Wms\InboundPlanLineController;
 use App\Http\Controllers\Wms\InboundReceiveController;
+use App\Http\Controllers\Wms\PutawayController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -76,6 +77,12 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/receiving/{inbound_plan}', [InboundReceiveController::class, 'show'])->name('receiving.show');
     Route::post('/receiving/{inbound_plan}/scan', [InboundReceiveController::class, 'scan'])->name('receiving.scan');
     Route::post('/receiving/{inbound_plan}/finish', [InboundReceiveController::class, 'finish'])->name('receiving.finish');
+
+    // ③ 入庫
+    Route::get('/putaway', [PutawayController::class, 'index'])->name('putaway.index');
+    Route::get('/putaway/{inbound_plan}', [PutawayController::class, 'show'])->name('putaway.show');
+    Route::post('/putaway/{inbound_plan}/store', [PutawayController::class, 'store'])->name('putaway.store');
+    Route::post('/putaway/{inbound_plan}/complete', [PutawayController::class, 'complete'])->name('putaway.complete');
 });
 
 // ユーザー・管理者同一パスのルート

@@ -46,6 +46,9 @@
             <a class="nav__link {{ request()->is('receiving*') ? 'is-active' : '' }}" href="{{ route('receiving.index') }}">
                 入荷する
             </a>
+            <a class="nav__link {{ request()->is('putaway*') ? 'is-active' : '' }}" href="{{ route('putaway.index') }}">
+                入荷作業中
+            </a>
         </nav>
 
         <div class="sidebar__footer">
