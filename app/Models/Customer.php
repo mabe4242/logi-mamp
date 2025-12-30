@@ -27,4 +27,9 @@ class Customer extends Model
     protected $casts = [
         'deleted_at' => 'datetime',
     ];
+
+    public function shipmentPlans()
+    {
+        return $this->hasMany(ShipmentPlan::class);
+    }
 }

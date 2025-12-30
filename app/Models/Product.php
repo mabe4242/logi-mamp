@@ -47,4 +47,9 @@ class Product extends Model
     {
         return $this->hasMany(InboundPlanLine::class);
     }
+
+    public function shipmentPlanLines()
+    {
+        return $this->hasMany(ShipmentPlanLine::class);
+    }
 }
