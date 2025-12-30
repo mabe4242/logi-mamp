@@ -35,4 +35,19 @@ class Admin extends Authenticatable
     {
         return $this->hasMany(StockAdjustment::class, 'created_by_admin_id');
     }
+
+    public function createdInboundPlans(): HasMany
+    {
+        return $this->hasMany(InboundPlan::class, 'created_by_admin_id');
+    }
+
+    public function receivingLogs(): HasMany
+    {
+        return $this->hasMany(ReceivingLog::class, 'scanned_by_admin_id');
+    }
+
+    public function putawayLines(): HasMany
+    {
+        return $this->hasMany(PutawayLine::class, 'putaway_by_admin_id');
+    }
 }

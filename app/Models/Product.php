@@ -42,4 +42,9 @@ class Product extends Model
     {
         return $this->hasMany(StockAdjustmentItem::class);
     }
+
+    public function inboundPlanLines(): HasMany
+    {
+        return $this->hasMany(InboundPlanLine::class);
+    }
 }

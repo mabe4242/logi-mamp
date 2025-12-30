@@ -39,4 +39,9 @@ class Location extends Model
     {
         return $this->hasMany(StockAdjustmentItem::class);
     }
+
+    public function putawayLines(): HasMany
+    {
+        return $this->hasMany(PutawayLine::class);
+    }
 }

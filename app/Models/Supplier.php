@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Supplier extends Model
 {
@@ -26,4 +27,9 @@ class Supplier extends Model
     protected $casts = [
         'deleted_at' => 'datetime',
     ];
+
+    public function inboundPlans(): HasMany
+    {
+        return $this->hasMany(InboundPlan::class);
+    }
 }
