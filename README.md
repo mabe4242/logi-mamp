@@ -1,80 +1,435 @@
-# COACHTECH 勤怠管理アプリ
+# 小規模WMS
 
-## 環境構築
+Laravel + MySQL で小規模WMS」を実装するための仕様書です。  
 
-### Dockerビルド手順
-1. `git clone git@github.com:mabe4242/Attendance-Manegement-App.git`
-2. `docker-compose up -d --build`
+---
 
-※ MySQLは、OSによって起動しない場合があるので、それぞれのPCに合わせて `docker-compose.yml` ファイルを編集してください。
+## 目次
 
-### Laravel環境構築手順
-1. `docker-compose exec php bash`
-2. `composer install`
-3. `.env.example` ファイルから `.env` を作成し、環境変数を編集
-4. `.env.testing.example` ファイルから `.env.testing` を作成し、環境変数を編集
-5. `php artisan key:generate`
-6. `php artisan migrate`
-7. `php artisan migrate --env=testing`
-8. `php artisan db:seed`
-9. `exit`でPHPコンテナを抜けて、ターミナルで`mailhog`と入力し、Mailhogが立ち上がっていることをご確認ください。  
-10. ログインに使用するテストアカウント等の情報は、READMEの末尾にまとめてありますのでそちらをご確認ください。  
+- [1. 概要](#1-概要)
+- [2. 対象機能（MVP）](#2-対象機能mvp)
+- [3. 用語定義](#3-用語定義)
+- [4. 技術スタック・前提](#4-技術スタック前提)
+- [5. 認証・権限（Adminガード）](#5-認証権限adminガード)
+- [6. データベース設計（テーブル一覧）](#6-データベース設計テーブル一覧)
+- [7. 在庫（stocks）仕様（重要）](#7-在庫stocks仕様重要)
+- [8. ステータス設計](#8-ステータス設計)
+- [9. 業務フロー（詳細）](#9-業務フロー詳細)
+  - [9.1 マスタ登録フロー](#91-マスタ登録フロー)
+  - [9.2 入荷フロー（入荷予定→入荷→入庫）](#92-入荷フロー入荷予定入荷入庫)
+  - [9.3 出荷フロー（出荷予定→引当→帳票→ピッキング→出荷作業→出荷完了）](#93-出荷フロー出荷予定引当帳票ピッキング出荷作業出荷完了)
+  - [9.4 出荷履歴（SHIPPED）](#94-出荷履歴shipped)
+- [10. 画面・ルーティング設計（要点）](#10-画面ルーティング設計要点)
+- [11. 仕様上の重要ポイント（設計意図）](#11-仕様上の重要ポイント設計意図)
+- [12. 今後の拡張候補](#12-今後の拡張候補)
+- [付録A：現状テーブル一覧（ユーザー提示）](#付録a現状テーブル一覧ユーザー提示)
 
-## 使用技術（実行環境）
-- PHP 8.1.33
-- JavaScript (ES6+)
-- Laravel 8.83.8
-- MySQL 8.0.26
+---
 
-## ER図
-![ER図](./er-diag.png)  
+## 1. 概要
 
-## メール認証につきまして
-このプロジェクトでは Mailhog を利用してメール送信の確認を行います。  
-docker-compose.yml に Mailhog コンテナを含めているため、以下のURLでメールを確認できます。
-URL:[http://localhost:8025](http://localhost:8025)
+### 1.1 目的
+小〜中規模倉庫・小売店を想定した、基本的なWMS（Warehouse Management System）の機能を Laravel + MySQL で構築します。
 
-ユーザー登録をすると確認メールが送信されます。  
-メール認証誘導画面からMailhogのメール認証画面にアクセスして、認証してください。  
-認証メールの再送を行なった場合もこちらの画面からメールのご確認をお願いいたします。  
-URL:[http://localhost:8025](http://localhost:8025)
+本READMEは以下を明確化します。
 
-## テスト時のデータベースにつきまして
-本番用DBとテスト用のDBを切り替えております。  
-テスト実行の際は上記の環境構築後に、`php artisan test`でテストの実行をご確認ください。
+- マスタ管理（商品/仕入先/出荷先/ロケーション）
+- 入荷（入荷予定→入荷→入庫）
+- 出荷（出荷予定→在庫引当→帳票→ピッキング→出荷作業→出荷完了→出荷履歴）
+- 在庫（on_hand / reserved）ロジック
 
-## ダミーデータにつきまして
-ダミーデータは、一般ユーザーを3人、管理者を1人生成します。  
-勤怠のデータはユーザー3人に対して、それぞれ30日分作成します。  
-db:seedした日の前日から30日分作成します。  
-例えば、10/12日にdb:seedすると、10/11から遡って30日分勤怠データが生成されます。  
-当日は3人ともまだ未出勤の状態です。  
+### 1.2 想定運用
+- 初期フェーズは **管理者がすべての操作を行う**（PC画面＋フォーム入力）
+- 将来的に、以下へ拡張可能な構成とする
+  - USBバーコードスキャナ入力（フォームへコード入力される方式でそのまま動く）
+  - 一般ユーザー（作業者）への権限分離（検品・ピッキングなど）
 
-## テストアカウント
+---
 
-一般ユーザー  
--------------------------
-name: user1  
-email: user1@example.com  
-password: 11111111  
--------------------------
-name: user2  
-email: user2@example.com  
-password: 11111111  
--------------------------
-name: user3  
-email: user3@example.com  
-password: 11111111  
--------------------------
-管理者  
--------------------------
-name: test-admin  
-email: test@example.com  
-password: 11111111  
--------------------------
+## 2. 対象機能（MVP）
 
-## ログイン情報URL
-- 開発環境： [http://localhost/](http://localhost/)
-- phpMyAdmin： [http://localhost:8080/](http://localhost:8080/)
-- 一般ユーザーログイン画面： [http://localhost/login](http://localhost/login)
-- 管理者ログイン画面： [http://localhost/admin/login](http://localhost/admin/login)
+### 2.1 マスタ系（CRUD）
+- 商品マスタ（`products`）
+- 仕入れ先マスタ（`suppliers`）
+- 出荷先マスタ（`customers`）
+- ロケーション（`locations`）
+
+### 2.2 在庫（stocks）
+- 商品 × ロケーションの在庫を管理
+- 数量は2種類
+  - `on_hand_qty`：現在庫（物理在庫）
+  - `reserved_qty`：取り置き（在庫引当）
+
+### 2.3 入荷 / 入庫
+- 入荷予定（ヘッダ＋明細）
+- 入荷（検品：スキャン入力でログ＋数量加算）
+- 入庫（ロケーション指定→在庫加算）
+- ログ：`receiving_logs` / `putaway_lines`
+
+### 2.4 出荷
+- 出荷予定（ヘッダ＋明細）
+- 在庫引当（`reserved_qty`を増やす）
+- 帳票発行（納品書・送り状：まずはHTMLで印刷可能）
+- ピッキング（スキャン入力→`picked_qty`を増やす）
+- 出荷作業（送り状番号スキャン・運送会社設定）
+- 出荷完了（在庫減算＋ログ）
+- 出荷履歴（SHIPPED一覧）
+
+---
+
+## 3. 用語定義
+
+### 3.1 マスタ
+業務の基礎情報（参照される情報）。  
+例：商品、仕入れ先、出荷先、ロケーション。
+
+### 3.2 入荷予定 / 入荷 / 入庫
+- **入荷予定**：いつ・何を・何個受け取る予定か（計画）
+- **入荷（検品）**：実際に受領し、数量を確定（受入実績）
+- **入庫**：どのロケーションへ格納したかを確定し、在庫に反映（`stocks.on_hand_qty`増加）
+
+### 3.3 出荷予定 / 在庫引当 / ピッキング / 出荷完了
+- **出荷予定**：いつ・どこへ・何を・何個出すか（計画）
+- **在庫引当**：出荷分の在庫を確保（`reserved_qty`増加）
+- **ピッキング**：棚から集める工程。`picked_qty` とログを記録
+- **出荷完了**：送り状貼付・梱包などを実施し在庫を減算（`on_hand_qty`/`reserved_qty`減少）
+
+---
+
+## 4. 技術スタック・前提
+
+- Backend：Laravel
+- DB：MySQL
+- UI：Blade（ロジクラ風レイアウト）
+- 認証：Adminガード（`auth:admin`）
+- スキャン：現状は **入力フォームで代替**（USBバーコードスキャナで実運用可能）
+
+---
+
+## 5. 認証・権限（Adminガード）
+
+- 管理画面は admin ガードで保護  
+  `Route::middleware(['auth:admin'])`
+- URLに `/admin` は付けない（例：`/products`）
+
+---
+
+## 6. データベース設計（テーブル一覧）
+
+> カラム詳細は実装（マイグレーション）に従う。  
+> ここではモジュール単位で整理する。
+
+### 6.1 認証
+- `admins`
+
+### 6.2 マスタ
+- `products`（商品マスタ）
+- `locations`（ロケーション）
+- `stocks`（在庫：product×location）
+- `suppliers`（仕入れ先マスタ）
+- `customers`（出荷先マスタ）
+
+### 6.3 入荷 / 入庫（Inbound）
+- `inbound_plans`（入荷予定ヘッダ）
+- `inbound_plan_lines`（入荷予定明細）
+- `receiving_logs`（入荷検品ログ）
+- `putaway_lines`（入庫実績）
+
+### 6.4 出荷（Outbound）
+- `shipment_plans`（出荷予定ヘッダ）
+- `shipment_plan_lines`（出荷予定明細）
+- `picking_logs`（ピッキングスキャン履歴）
+- `shipping_logs`（出荷作業・送り状履歴）
+
+---
+
+## 7. 在庫（stocks）仕様（重要）
+
+### 7.1 数量定義
+- `on_hand_qty`：現在庫（物理在庫）
+- `reserved_qty`：引当在庫（出荷予定に確保され、他で使えない）
+
+### 7.2 引当可能数（available）
+- `available = on_hand_qty - reserved_qty`
+
+### 7.3 在庫が増えるタイミング
+- **入庫（putaway）完了時**
+  - `stocks.on_hand_qty += 入庫数量`
+  - `reserved_qty` は触らない
+
+### 7.4 在庫が減るタイミング
+- **出荷完了（ship）時**
+  - `stocks.on_hand_qty -= 出荷数量`
+  - `stocks.reserved_qty -= 出荷数量`
+
+### 7.5 reserved_qty の増減
+- 増える：在庫引当（allocate）時
+- 減る：出荷完了（ship）時、または引当解除（deallocate）時
+
+---
+
+## 8. ステータス設計
+
+### 8.1 出荷ステータス（`shipment_plans.status`）
+MVPで運用するステータス。
+
+- `DRAFT`：下書き
+- `PLANNED`：①出荷予定（未引当）
+- `ALLOCATED`：②在庫引当済み（帳票発行可能）
+- `PICKING`：③ピッキング中
+- `PACKING`：④出荷作業中
+- `SHIPPED`：出荷完了（履歴）
+- `CANCELED`：キャンセル
+
+### 8.2 入荷ステータス（`inbound_plans.status`）
+入荷側は実装済みのステータス体系に従う（例：予定→検品→入庫→完了）。
+
+---
+
+## 9. 業務フロー（詳細）
+
+> この章が最重要です。  
+> 「どの画面で」「何をして」「どのテーブルが更新され」「ステータスがどう動くか」をまとめています。
+
+---
+
+### 9.1 マスタ登録フロー
+
+#### 9.1.1 商品マスタ（products）
+- 管理者が商品を登録・更新・削除（SoftDelete）
+- SKU / バーコード / 名称などを登録
+- 入荷・出荷の明細は商品マスタを参照する
+
+#### 9.1.2 仕入れ先（suppliers）
+- 管理者が仕入れ先を登録
+- 入荷予定で参照（運用上）
+
+#### 9.1.3 出荷先（customers）
+- 管理者が出荷先を登録
+- 出荷予定で必須参照
+
+#### 9.1.4 ロケーション（locations）
+- 管理者が棚番や保管位置を登録（例：A-01）
+- 入庫時に「どこに置くか」を指定する
+
+---
+
+### 9.2 入荷フロー（入荷予定→入荷→入庫）
+
+#### 9.2.1 ① 入荷予定（Inbound Plan）
+**目的**：入荷予定（いつ・何を・何個）を登録する。
+
+- 画面：入荷予定タブ
+- 操作：ヘッダ作成 → 明細追加
+- DB更新：
+  - `inbound_plans` 作成
+  - `inbound_plan_lines` 作成
+
+#### 9.2.2 ② 入荷（検品）
+**目的**：実際の入荷を検品し、受け取った数量を確定する。
+
+- 画面：入荷するタブ
+- 操作：バーコード入力（スキャン代替）→数量加算
+- DB更新：
+  - `receiving_logs` 追加（スキャン履歴）
+  - `inbound_plan_lines` の受入数量を加算
+
+#### 9.2.3 ③ 入庫（putaway）
+**目的**：ロケーションへ格納して在庫を増やす。
+
+- 画面：入荷作業中タブ
+- 操作：対象選択 → ロケーション指定 → 入庫数量登録
+- DB更新：
+  - `putaway_lines` 追加（入庫実績）
+  - `stocks` 更新
+    - product×location の行を作成/取得
+    - `on_hand_qty += 入庫数量`
+
+**完了判定**  
+- 全明細が入庫完了したら、入荷ヘッダは完了扱い。
+
+---
+
+### 9.3 出荷フロー（出荷予定→引当→帳票→ピッキング→出荷作業→出荷完了）
+
+---
+
+#### 9.3.1 ① 出荷予定（未引当：PLANNED）
+**目的**：出荷予定を登録する（まだ在庫は確保しない）。
+
+- 画面：出荷予定タブ
+- ステータス：`PLANNED`
+- DB更新：
+  - `shipment_plans` 作成（status=PLANNED）
+  - `shipment_plan_lines` 作成（planned_qty）
+
+---
+
+#### 9.3.2 在庫引当（allocate：ALLOCATEDへ）
+**目的**：出荷予定分の在庫を確保する（reserved_qty増加）。
+
+- 実行条件：status=`PLANNED`
+- ロジック：
+  - 各明細について `available = on_hand - reserved` の合計が `planned_qty` 以上かチェック
+  - 足りない場合：引当不可（エラー）
+  - 足りる場合：`stocks.reserved_qty` を必要量増加（ロケ跨ぎで確保）
+- DB更新：
+  - `stocks.reserved_qty += 引当数量`
+  - `shipment_plans.status = ALLOCATED`
+
+**引当解除（deallocate）**
+- status=`ALLOCATED` のとき reserved を戻して `PLANNED` へ戻せる（安全運用）
+
+---
+
+#### 9.3.3 ② 在庫引当済み（帳票発行：ALLOCATED）
+**目的**：出荷準備が完了した状態として、帳票発行とピッキング開始を可能にする。
+
+- 対象：status=`ALLOCATED`
+- 画面：在庫引当済みタブ
+- 機能：
+  - 一覧（検索：出荷先名・出荷予定日）
+  - 詳細（ヘッダ＋明細）
+  - 納品書発行（HTML印刷）
+  - 送り状発行（HTML印刷）
+  - ピッキング開始ボタン
+
+**ピッキング開始**
+- `shipment_plans.status = PICKING`
+
+---
+
+#### 9.3.4 ③ ピッキング（PICKING）
+**目的**：棚から商品を集め、ピック済数量を記録する。
+
+- 対象：status=`PICKING`
+- 画面：ピッキング開始タブ → ピッキング画面
+- 操作：
+  - バーコード/SKU入力（スキャン代替）→ Enter
+- ロジック：
+  - 入力コードで該当明細を特定
+  - 予定数超えは禁止（`picked_qty >= planned_qty` はブロック）
+- DB更新：
+  - `picking_logs` 追加
+  - `shipment_plan_lines.picked_qty += 1`
+
+**完了判定**
+- 全明細が `planned_qty == picked_qty` になったら完了
+- 完了で `shipment_plans.status = PACKING`
+
+---
+
+#### 9.3.5 ④ 出荷作業（PACKING → SHIPPED）
+**目的**：送り状番号・運送会社を確定し、在庫を減算して出荷完了とする。
+
+- 対象：status=`PACKING`
+- 画面：出荷作業開始タブ
+- 入力：
+  - tracking_no（送り状番号：スキャン代替）
+  - carrier（運送会社）
+- 出荷完了（ship）で行う処理：
+  - 出荷数量：基本は `picked_qty - shipped_qty`（差分）
+  - 在庫減算
+    - `stocks.on_hand_qty -= 出荷数量`
+    - `stocks.reserved_qty -= 出荷数量`
+  - 明細更新
+    - `shipment_plan_lines.shipped_qty += 出荷数量`
+  - ログ追加
+    - `shipping_logs` に1件（carrier, tracking_no, shipped_at）
+  - ステータス更新
+    - `shipment_plans.status = SHIPPED`
+
+**同時実行対策**
+- 在庫更新はトランザクション＋ `lockForUpdate()` を推奨
+
+---
+
+### 9.4 出荷履歴（SHIPPED）
+
+**目的**：出荷完了済み（SHIPPED）の履歴を検索・参照できるようにする。
+
+- 対象：status=`SHIPPED`
+- 画面：出荷履歴タブ
+- 機能：
+  - 一覧（検索：出荷先名、出荷予定日、送り状番号）
+  - 詳細（ヘッダ＋明細＋出荷ログ）
+  - 納品書/送り状の再表示（帳票HTMLを流用）
+
+---
+
+## 10. 画面・ルーティング設計（要点）
+
+### 10.1 マスタ
+- `/products`：商品CRUD
+- `/suppliers`：仕入先CRUD
+- `/customers`：出荷先CRUD
+- `/locations`：ロケーションCRUD
+
+### 10.2 在庫
+- `/stocks`：在庫一覧（on_hand / reserved / available）
+
+### 10.3 入荷
+- 入荷予定（CRUD）
+- 入荷（検品）
+- 入庫（putaway）
+
+### 10.4 出荷
+- `/shipment-plans`：出荷予定CRUD＋引当
+- `/allocated-shipments`：在庫引当済み（帳票＋ピッキング開始）
+- `/picking`：ピッキング
+- `/packing`：出荷作業
+- `/shipped-histories`：出荷履歴（SHIPPED）
+
+---
+
+## 11. 仕様上の重要ポイント（設計意図）
+
+### 11.1 在庫を減らすのは「出荷完了」だけ
+- ピッキング時点で在庫を減らさないことで、誤操作・差戻しに強くなる
+- **出荷完了が確定処理**として一番安全
+
+### 11.2 引当（reserved_qty）で破綻を防ぐ
+- 引当済みは他の出荷に使えない
+- 「足りないなら引当できない」ことで在庫不足トラブルを早期検知
+
+### 11.3 ロケーション単位の引当はMVPでは後回し
+- MVPは「商品合計で引当」
+- 本格運用では「どのロケから何個ピックしたか」を持つと正確な棚在庫になる
+
+---
+
+## 12. 今後の拡張候補
+
+- ピッキングリスト発行（PDF/印刷）
+- 運送会社（ヤマト/佐川）へのCSV/API連携
+- 棚卸・在庫調整（差異理由・履歴）
+- ロケーション別引当・ピック元ロケ記録（本格WMS化）
+- 作業者（一般ユーザー）画面分離（検品・ピッキング等）
+
+---
+
+## 付録A：現状テーブル一覧（ユーザー提示）
+
+- `admins`
+
+### マスタ系
+- `products`（商品マスタ）
+- `locations`（ロケーション）
+- `stocks`（在庫）
+- `suppliers`（仕入れ先マスタ）
+- `customers`（出荷先マスタ）
+
+### 入荷 / 入庫
+- `inbound_plans`
+- `inbound_plan_lines`
+- `receiving_logs`
+- `putaway_lines`
+
+### 出荷
+- `shipment_plans`（出荷予定ヘッダ）
+- `shipment_plan_lines`（出荷予定明細）
+- `picking_logs`（ピッキングスキャン履歴）
+- `shipping_logs`（出荷作業・送り状履歴）
+
+---
+```

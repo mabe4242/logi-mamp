@@ -15,7 +15,8 @@
 <div class="card">
     <h2 class="card__title">商品情報</h2>
 
-    <form id="product-form" method="POST" action="{{ route('products.store') }}">
+    {{-- <form id="product-form" method="POST" action="{{ route('products.store') }}"> --}}
+    <form id="product-form" method="POST" action="{{ route('products.store') . '?XDEBUG_TRIGGER=1' }}">
         @csrf
 
         <div class="form-grid">
