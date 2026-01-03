@@ -66,6 +66,10 @@
             href="{{ route('packing.index') }}">
                 出荷作業開始
             </a>
+            <a class="nav__link {{ request()->is('shipped-histories*') ? 'is-active' : '' }}"
+            href="{{ route('shipped-histories.index') }}">
+                出荷履歴
+            </a>
         </nav>
 
         <div class="sidebar__footer">

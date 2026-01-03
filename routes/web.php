@@ -21,6 +21,7 @@ use App\Http\Controllers\Wms\ShipmentPlanLineController;
 use App\Http\Controllers\Wms\AllocatedShipmentController;
 use App\Http\Controllers\Wms\PickingController;
 use App\Http\Controllers\Wms\PackingController;
+use App\Http\Controllers\Wms\ShippedHistoryController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -163,6 +164,14 @@ Route::middleware(['auth:admin'])->group(function () {
 
     // 出荷完了（在庫減算）
     Route::post('/packing/{shipment_plan}/ship', [PackingController::class, 'ship'])->name('packing.ship');
+
+    // ⑤ 出荷履歴一覧
+    Route::get('/shipped-histories', [ShippedHistoryController::class, 'index'])->name('shipped-histories.index');
+    Route::get('/shipped-histories/{shipment_plan}', [ShippedHistoryController::class, 'show'])->name('shipped-histories.show');
+
+    // 履歴から帳票を再表示
+    Route::get('/shipped-histories/{shipment_plan}/invoice', [ShippedHistoryController::class, 'invoice'])->name('shipped-histories.invoice');
+    Route::get('/shipped-histories/{shipment_plan}/label', [ShippedHistoryController::class, 'label'])->name('shipped-histories.label');
 });
 
 // ユーザー・管理者同一パスのルート
