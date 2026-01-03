@@ -18,6 +18,7 @@ use App\Http\Controllers\Wms\PutawayController;
 use App\Http\Controllers\Wms\StockController;
 use App\Http\Controllers\Wms\ShipmentPlanController;
 use App\Http\Controllers\Wms\ShipmentPlanLineController;
+use App\Http\Controllers\Wms\AllocatedShipmentController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -122,6 +123,25 @@ Route::middleware(['auth:admin'])->group(function () {
         'shipment-plans/{shipment_plan}/deallocate',
         [ShipmentPlanController::class, 'deallocate']
     )->name('shipment-plans.deallocate');
+
+    // ② 帳票発行
+    Route::get('/allocated-shipments', [AllocatedShipmentController::class, 'index'])
+        ->name('allocated-shipments.index');
+
+    Route::get('/allocated-shipments/{shipment_plan}', [AllocatedShipmentController::class, 'show'])
+        ->name('allocated-shipments.show');
+
+    // 納品書（HTML）
+    Route::get('/allocated-shipments/{shipment_plan}/invoice', [AllocatedShipmentController::class, 'invoice'])
+        ->name('allocated-shipments.invoice');
+
+    // 送り状（HTML）
+    Route::get('/allocated-shipments/{shipment_plan}/label', [AllocatedShipmentController::class, 'label'])
+        ->name('allocated-shipments.label');
+
+    // ピッキング開始（③へ）
+    Route::post('/allocated-shipments/{shipment_plan}/start-picking', [AllocatedShipmentController::class, 'startPicking'])
+        ->name('allocated-shipments.start-picking');
 });
 
 // ユーザー・管理者同一パスのルート

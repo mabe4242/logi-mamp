@@ -54,6 +54,10 @@
             <a class="nav__link {{ request()->is('shipment-plans*') ? 'is-active' : '' }}" href="{{ route('shipment-plans.index') }}">
                 出荷予定
             </a>
+            <a class="nav__link {{ request()->is('allocated-shipments*') ? 'is-active' : '' }}"
+            href="{{ route('allocated-shipments.index') }}">
+                在庫引当済み
+            </a>
         </nav>
 
         <div class="sidebar__footer">
