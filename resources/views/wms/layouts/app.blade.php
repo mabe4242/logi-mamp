@@ -62,6 +62,10 @@
             href="{{ route('picking.index') }}">
                 ピッキング開始
             </a>
+            <a class="nav__link {{ request()->is('packing*') ? 'is-active' : '' }}"
+            href="{{ route('packing.index') }}">
+                出荷作業開始
+            </a>
         </nav>
 
         <div class="sidebar__footer">

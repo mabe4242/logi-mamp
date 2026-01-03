@@ -20,6 +20,7 @@ use App\Http\Controllers\Wms\ShipmentPlanController;
 use App\Http\Controllers\Wms\ShipmentPlanLineController;
 use App\Http\Controllers\Wms\AllocatedShipmentController;
 use App\Http\Controllers\Wms\PickingController;
+use App\Http\Controllers\Wms\PackingController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -149,6 +150,19 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/picking/{shipment_plan}', [PickingController::class, 'show'])->name('picking.show');
     Route::post('/picking/{shipment_plan}/scan', [PickingController::class, 'scan'])->name('picking.scan');
     Route::post('/picking/{shipment_plan}/finish', [PickingController::class, 'finish'])->name('picking.finish');
+
+    // ④ 出荷作業(Packing)
+    Route::get('/packing', [PackingController::class, 'index'])->name('packing.index');
+    Route::get('/packing/{shipment_plan}', [PackingController::class, 'show'])->name('packing.show');
+
+    // 送り状スキャン（入力）
+    Route::post('/packing/{shipment_plan}/scan-label', [PackingController::class, 'scanLabel'])->name('packing.scan-label');
+
+    // 運送会社設定
+    Route::post('/packing/{shipment_plan}/set-carrier', [PackingController::class, 'setCarrier'])->name('packing.set-carrier');
+
+    // 出荷完了（在庫減算）
+    Route::post('/packing/{shipment_plan}/ship', [PackingController::class, 'ship'])->name('packing.ship');
 });
 
 // ユーザー・管理者同一パスのルート
