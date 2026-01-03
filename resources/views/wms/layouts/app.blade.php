@@ -58,6 +58,10 @@
             href="{{ route('allocated-shipments.index') }}">
                 在庫引当済み
             </a>
+            <a class="nav__link {{ request()->is('picking*') ? 'is-active' : '' }}"
+            href="{{ route('picking.index') }}">
+                ピッキング開始
+            </a>
         </nav>
 
         <div class="sidebar__footer">

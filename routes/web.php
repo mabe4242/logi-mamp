@@ -19,6 +19,7 @@ use App\Http\Controllers\Wms\StockController;
 use App\Http\Controllers\Wms\ShipmentPlanController;
 use App\Http\Controllers\Wms\ShipmentPlanLineController;
 use App\Http\Controllers\Wms\AllocatedShipmentController;
+use App\Http\Controllers\Wms\PickingController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -142,6 +143,12 @@ Route::middleware(['auth:admin'])->group(function () {
     // ピッキング開始（③へ）
     Route::post('/allocated-shipments/{shipment_plan}/start-picking', [AllocatedShipmentController::class, 'startPicking'])
         ->name('allocated-shipments.start-picking');
+
+    // ③ ピッキング
+    Route::get('/picking', [PickingController::class, 'index'])->name('picking.index');
+    Route::get('/picking/{shipment_plan}', [PickingController::class, 'show'])->name('picking.show');
+    Route::post('/picking/{shipment_plan}/scan', [PickingController::class, 'scan'])->name('picking.scan');
+    Route::post('/picking/{shipment_plan}/finish', [PickingController::class, 'finish'])->name('picking.finish');
 });
 
 // ユーザー・管理者同一パスのルート
