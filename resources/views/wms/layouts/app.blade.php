@@ -49,6 +49,11 @@
             <a class="nav__link {{ request()->is('putaway*') ? 'is-active' : '' }}" href="{{ route('putaway.index') }}">
                 入荷作業中
             </a>
+
+            <div class="nav__section">出荷</div>
+            <a class="nav__link {{ request()->is('shipment-plans*') ? 'is-active' : '' }}" href="{{ route('shipment-plans.index') }}">
+                出荷予定
+            </a>
         </nav>
 
         <div class="sidebar__footer">

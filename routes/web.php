@@ -16,6 +16,8 @@ use App\Http\Controllers\Wms\InboundPlanLineController;
 use App\Http\Controllers\Wms\InboundReceiveController;
 use App\Http\Controllers\Wms\PutawayController;
 use App\Http\Controllers\Wms\StockController;
+use App\Http\Controllers\Wms\ShipmentPlanController;
+use App\Http\Controllers\Wms\ShipmentPlanLineController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -90,7 +92,36 @@ Route::middleware(['auth:admin'])->group(function () {
     // 在庫一覧
     Route::get('/stocks', [StockController::class, 'index'])->name('stocks.index');
 
-    // 出荷作業はここに
+    // 出荷予定 ①
+    Route::resource('shipment-plans', ShipmentPlanController::class);
+
+    // 明細
+    Route::post(
+        'shipment-plans/{shipment_plan}/lines',
+        [ShipmentPlanLineController::class, 'store']
+    )->name('shipment-plans.lines.store');
+
+    Route::patch(
+        'shipment-plans/{shipment_plan}/lines/{line}',
+        [ShipmentPlanLineController::class, 'update']
+    )->name('shipment-plans.lines.update');
+
+    Route::delete(
+        'shipment-plans/{shipment_plan}/lines/{line}',
+        [ShipmentPlanLineController::class, 'destroy']
+    )->name('shipment-plans.lines.destroy');
+
+    // 在庫引当
+    Route::post(
+        'shipment-plans/{shipment_plan}/allocate',
+        [ShipmentPlanController::class, 'allocate']
+    )->name('shipment-plans.allocate');
+
+    // 引当解除
+    Route::post(
+        'shipment-plans/{shipment_plan}/deallocate',
+        [ShipmentPlanController::class, 'deallocate']
+    )->name('shipment-plans.deallocate');
 });
 
 // ユーザー・管理者同一パスのルート
