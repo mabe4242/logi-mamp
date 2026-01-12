@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Wms;
 
 use App\Http\Controllers\Controller;
 use App\Models\ShipmentPlan;
-use App\Models\ShipmentPlanLine;
 use App\Models\Customer;
 use App\Models\Stock;
 use App\Models\Product;
@@ -20,7 +19,6 @@ class ShipmentPlanController extends Controller
         // 検索：出荷先名（customers.name）
         if ($request->filled('keyword')) {
             $keyword = $request->keyword;
-
             $query->whereHas('customer', function ($q) use ($keyword) {
                 $q->where('name', 'like', "%{$keyword}%");
             });
@@ -31,10 +29,7 @@ class ShipmentPlanController extends Controller
             $query->whereDate('planned_ship_date', $request->planned_ship_date);
         }
 
-        $plans = $query
-            ->orderByDesc('id')
-            ->paginate(20)
-            ->withQueryString();
+        $plans = $query->orderByDesc('id')->paginate(20)->withQueryString();
 
         return view('wms.shipment_plans.index', compact('plans'));
     }
@@ -88,18 +83,13 @@ class ShipmentPlanController extends Controller
 
         $shipment_plan->update($validated);
 
-        return redirect()
-            ->route('shipment-plans.show', $shipment_plan)
-            ->with('success', '更新しました');
+        return redirect()->route('shipment-plans.show', $shipment_plan)->with('success', '更新しました');
     }
 
     public function destroy(ShipmentPlan $shipment_plan)
     {
         $shipment_plan->delete();
-
-        return redirect()
-            ->route('shipment-plans.index')
-            ->with('success', '削除しました');
+        return redirect()->route('shipment-plans.index')->with('success', '削除しました');
     }
 
     /**

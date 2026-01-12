@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Wms;
 use App\Http\Controllers\Controller;
 use App\Models\InboundPlan;
 use App\Models\InboundPlanLine;
-use App\Models\Product;
 use App\Models\ReceivingLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,8 +16,7 @@ class InboundReceiveController extends Controller
      */
     public function index(Request $request)
     {
-        $query = InboundPlan::query()
-            ->with('supplier')
+        $query = InboundPlan::query()->with('supplier')
             ->where('status', 'RECEIVING');
 
         if ($request->filled('keyword')) {
@@ -43,7 +41,7 @@ class InboundReceiveController extends Controller
 
         $inbound_plan->load(['supplier', 'lines.product']);
 
-        // 直近ログ（見えると気持ちいい）
+        // 直近ログ
         $recentLogs = ReceivingLog::where('inbound_plan_id', $inbound_plan->id)
             ->latest()->limit(10)->get();
 
@@ -51,7 +49,8 @@ class InboundReceiveController extends Controller
     }
 
     /**
-     * 検品スキャン（入力欄で代替）
+     * 検品スキャン（入力フォームで代替中）
+     * 現場を想定してJANコードでもskuコードでも検品できるようにしている
      * barcode or sku を受け取って、該当明細の received_qty を +1
      */
     public function scan(Request $request, InboundPlan $inbound_plan)
@@ -61,12 +60,12 @@ class InboundReceiveController extends Controller
         }
 
         $validated = $request->validate([
-            'code' => 'required|string|max:255', // barcode or sku
+            'code' => 'required|string|max:255',
         ]);
 
         $code = trim($validated['code']);
 
-        // ① 入荷予定に紐づく商品明細を特定
+        // 入荷予定に紐づく商品明細を特定
         $line = InboundPlanLine::query()
             ->where('inbound_plan_id', $inbound_plan->id)
             ->whereHas('product', function ($q) use ($code) {
@@ -81,7 +80,7 @@ class InboundReceiveController extends Controller
             ])->withInput();
         }
 
-        // 予定数超えを禁止（MVP安全運用）
+        // 予定数超えを防止
         if ($line->received_qty >= $line->planned_qty) {
             return back()->withErrors([
                 'code' => "この商品はすでに予定数まで検品済みです（{$line->product->name}）",
@@ -89,17 +88,16 @@ class InboundReceiveController extends Controller
         }
 
         DB::transaction(function () use ($inbound_plan, $line, $code) {
-            // ログ
             ReceivingLog::create([
                 'inbound_plan_id' => $inbound_plan->id,
                 'inbound_plan_line_id' => $line->id,
                 'scanned_code' => $code,
-                'qty' => 1,
+                'qty' => 1,  //これマジックナンバー
                 'scanned_by_admin_id' => auth('admin')->id(),
             ]);
 
             // 明細側カウントアップ
-            $line->increment('received_qty', 1);
+            $line->increment('received_qty', 1); //これマジックナンバー
         });
 
         return redirect()
@@ -116,7 +114,7 @@ class InboundReceiveController extends Controller
             return back()->withErrors(['status' => '検品完了にできる状態ではありません。']);
         }
 
-        // 1件も検品されてないなら止める（任意）
+        // 1件も検品されてないなら止める
         $receivedTotal = $inbound_plan->lines()->sum('received_qty');
         if ($receivedTotal <= 0) {
             return back()->withErrors(['status' => '検品済み数量が0です。検品してから完了してください。']);

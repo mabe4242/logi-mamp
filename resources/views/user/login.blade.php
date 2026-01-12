@@ -37,6 +37,9 @@
             <div class="register__link">
                 <a class="register__button-submit" href="/register">会員登録はこちら</a>
             </div>
+            <div class="register__link">
+                <a class="register__button-submit" href="/admin/login">管理者としてログイン</a>
+            </div>
         </form>
     </div>
 @endsection

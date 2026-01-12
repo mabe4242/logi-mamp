@@ -55,7 +55,7 @@ class PutawayController extends Controller
     }
 
     /**
-     * 入庫実行（明細行×ロケーション×数量）
+     * 入庫実行（ 明細行 × ロケーション × 数量 ）
      */
     public function store(Request $request, InboundPlan $inbound_plan)
     {
@@ -69,7 +69,6 @@ class PutawayController extends Controller
             'qty' => 'required|integer|min:1',
         ]);
 
-        /** @var InboundPlanLine $line */
         $line = InboundPlanLine::with('product')->findOrFail($validated['line_id']);
 
         if ($line->inbound_plan_id !== $inbound_plan->id) {
@@ -98,17 +97,19 @@ class PutawayController extends Controller
 
             // 3) stocks を増加（product_id × location_id で upsert）
             $stock = Stock::firstOrCreate(
+                // ① 検索条件
                 [
                     'product_id' => $line->product_id,
                     'location_id' => $validated['location_id'],
                 ],
+                // ② 作成時の追加カラム（※見つからなかった場合だけ使う）
                 [
                     'on_hand_qty' => 0,
                     'reserved_qty' => 0,
                 ]
             );
 
-            // 入庫なので「現在庫」を増やす
+            // 「現在庫」を増やす
             $stock->increment('on_hand_qty', $validated['qty']);
 
             // 4) 全明細が入庫済なら COMPLETED
@@ -127,7 +128,7 @@ class PutawayController extends Controller
     }
 
     /**
-     * 手動で完了（任意）
+     * 入庫完了処理
      */
     public function complete(InboundPlan $inbound_plan)
     {

@@ -14,6 +14,7 @@ class InboundPlanController extends Controller
         $query = InboundPlan::query()->with('supplier');
 
         // 検索（仕入先名 / ステータス / 日付）
+        // なぜここだけ無名関数も出てくるのかというと、リレーション先のsupplierに検索条件をかけてるから！
         if ($request->filled('keyword')) {
             $keyword = $request->keyword;
             $query->whereHas('supplier', function ($q) use ($keyword) {
@@ -34,6 +35,7 @@ class InboundPlanController extends Controller
             ->paginate(20)
             ->withQueryString();
 
+        // ここに定数のステータスを書いてるのはダメです！Enumsに切り出して！
         $statuses = [
             'DRAFT' => '下書き',
             'RECEIVING' => '入荷作業中（検品）',

@@ -39,6 +39,7 @@ class PackingController extends Controller
         $recentLogs = ShippingLog::where('shipment_plan_id', $shipment_plan->id)
             ->latest()->limit(10)->get();
 
+        // ここに書くな！Enumsに切り出して
         $carriers = [
             'ヤマト',
             '佐川',

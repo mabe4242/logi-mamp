@@ -45,7 +45,7 @@ class AllocatedShipmentController extends Controller
 
         $shipment_plan->load(['customer', 'lines.product']);
 
-        // まずはHTML表示（印刷できる）
+        // まずはHTML表示
         return view('wms.allocated_shipments.invoice', compact('shipment_plan'));
     }
 
@@ -55,7 +55,7 @@ class AllocatedShipmentController extends Controller
 
         $shipment_plan->load(['customer', 'lines.product']);
 
-        // まずはHTML表示（印刷できる）
+        // まずはHTML表示
         return view('wms.allocated_shipments.label', compact('shipment_plan'));
     }
 

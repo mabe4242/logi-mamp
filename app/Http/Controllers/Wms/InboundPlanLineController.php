@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Wms;
 use App\Http\Controllers\Controller;
 use App\Models\InboundPlan;
 use App\Models\InboundPlanLine;
-use App\Models\Product;
 use Illuminate\Http\Request;
 
 class InboundPlanLineController extends Controller
@@ -18,12 +17,10 @@ class InboundPlanLineController extends Controller
             'note' => 'nullable|string',
         ]);
 
-        // DRAFTのみ編集可能にしておく（運用が楽）
         if ($inbound_plan->status !== 'DRAFT') {
             return back()->withErrors(['status' => '確定後は明細を追加できません（下書きに戻す運用が必要です）。']);
         }
 
-        // unique(inbound_plan_id, product_id) に合わせて updateOrCreate
         InboundPlanLine::updateOrCreate(
             ['inbound_plan_id' => $inbound_plan->id, 'product_id' => $validated['product_id']],
             [
