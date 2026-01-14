@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Wms;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Wms\StoreSupplierRequest;
+use App\Http\Requests\Wms\UpdateSupplierRequest;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 
@@ -35,21 +37,9 @@ class SupplierController extends Controller
         return view('wms.suppliers.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreSupplierRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'code' => 'nullable|string|max:255|unique:suppliers,code',
-            'postal_code' => 'nullable|string|max:20',
-            'address1' => 'nullable|string|max:255',
-            'address2' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:50',
-            'email' => 'nullable|email|max:255',
-            'contact_name' => 'nullable|string|max:255',
-            'note' => 'nullable|string',
-        ]);
-
-        Supplier::create($validated);
+        Supplier::create($request->validated());
 
         return redirect()
             ->route('suppliers.index')
@@ -66,21 +56,9 @@ class SupplierController extends Controller
         return view('wms.suppliers.edit', compact('supplier'));
     }
 
-    public function update(Request $request, Supplier $supplier)
+    public function update(UpdateSupplierRequest $request, Supplier $supplier)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'code' => 'nullable|string|max:255|unique:suppliers,code,' . $supplier->id,
-            'postal_code' => 'nullable|string|max:20',
-            'address1' => 'nullable|string|max:255',
-            'address2' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:50',
-            'email' => 'nullable|email|max:255',
-            'contact_name' => 'nullable|string|max:255',
-            'note' => 'nullable|string',
-        ]);
-
-        $supplier->update($validated);
+        $supplier->update($request->validated());
 
         return redirect()
             ->route('suppliers.show', $supplier)

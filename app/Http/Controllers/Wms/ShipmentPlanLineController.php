@@ -3,22 +3,21 @@
 namespace App\Http\Controllers\Wms;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Wms\StoreShipmentPlanLineRequest;
+use App\Http\Requests\Wms\UpdateShipmentPlanLineRequest;
 use App\Models\ShipmentPlan;
 use App\Models\ShipmentPlanLine;
 use Illuminate\Http\Request;
 
 class ShipmentPlanLineController extends Controller
 {
-    public function store(Request $request, ShipmentPlan $shipment_plan)
+    public function store(StoreShipmentPlanLineRequest $request, ShipmentPlan $shipment_plan)
     {
         if ($shipment_plan->status !== 'PLANNED') {
             return back()->withErrors(['status' => '確定後は編集できません']);
         }
 
-        $validated = $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'planned_qty' => 'required|integer|min:1',
-        ]);
+        $validated = $request->validated();
 
         ShipmentPlanLine::updateOrCreate(
             [
@@ -31,13 +30,9 @@ class ShipmentPlanLineController extends Controller
         return back()->with('success', '明細を追加しました');
     }
 
-    public function update(Request $request, ShipmentPlan $shipment_plan, ShipmentPlanLine $line)
+    public function update(UpdateShipmentPlanLineRequest $request, ShipmentPlan $shipment_plan, ShipmentPlanLine $line)
     {
-        $validated = $request->validate([
-            'planned_qty' => 'required|integer|min:1',
-        ]);
-
-        $line->update($validated);
+        $line->update($request->validated());
 
         return back()->with('success', '明細を更新しました');
     }

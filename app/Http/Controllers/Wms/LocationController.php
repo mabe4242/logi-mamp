@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Wms;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Wms\StoreLocationRequest;
+use App\Http\Requests\Wms\UpdateLocationRequest;
 use App\Models\Location;
 use Illuminate\Http\Request;
 
@@ -43,15 +45,9 @@ class LocationController extends Controller
     /**
      * 登録処理
      */
-    public function store(Request $request)
+    public function store(StoreLocationRequest $request)
     {
-        $validated = $request->validate([
-            'code' => 'required|string|max:255|unique:locations,code',
-            'name' => 'nullable|string|max:255',
-            'note' => 'nullable|string',
-        ]);
-
-        Location::create($validated);
+        Location::create($request->validated());
 
         return redirect()
             ->route('locations.index')
@@ -77,15 +73,9 @@ class LocationController extends Controller
     /**
      * 更新処理
      */
-    public function update(Request $request, Location $location)
+    public function update(UpdateLocationRequest $request, Location $location)
     {
-        $validated = $request->validate([
-            'code' => 'required|string|max:255|unique:locations,code,' . $location->id,
-            'name' => 'nullable|string|max:255',
-            'note' => 'nullable|string',
-        ]);
-
-        $location->update($validated);
+        $location->update($request->validated());
 
         return redirect()
             ->route('locations.show', $location)

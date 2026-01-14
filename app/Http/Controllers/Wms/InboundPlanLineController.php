@@ -3,19 +3,17 @@
 namespace App\Http\Controllers\Wms;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Wms\StoreInboundPlanLineRequest;
+use App\Http\Requests\Wms\UpdateInboundPlanLineRequest;
 use App\Models\InboundPlan;
 use App\Models\InboundPlanLine;
 use Illuminate\Http\Request;
 
 class InboundPlanLineController extends Controller
 {
-    public function store(Request $request, InboundPlan $inbound_plan)
+    public function store(StoreInboundPlanLineRequest $request, InboundPlan $inbound_plan)
     {
-        $validated = $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'planned_qty' => 'required|integer|min:1',
-            'note' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         if ($inbound_plan->status !== 'DRAFT') {
             return back()->withErrors(['status' => '確定後は明細を追加できません（下書きに戻す運用が必要です）。']);
@@ -34,13 +32,8 @@ class InboundPlanLineController extends Controller
             ->with('success', '明細を追加しました');
     }
 
-    public function update(Request $request, InboundPlan $inbound_plan, InboundPlanLine $line)
+    public function update(UpdateInboundPlanLineRequest $request, InboundPlan $inbound_plan, InboundPlanLine $line)
     {
-        $validated = $request->validate([
-            'planned_qty' => 'required|integer|min:1',
-            'note' => 'nullable|string',
-        ]);
-
         if ($inbound_plan->status !== 'DRAFT') {
             return back()->withErrors(['status' => '確定後は明細を編集できません。']);
         }
@@ -50,7 +43,7 @@ class InboundPlanLineController extends Controller
             abort(404);
         }
 
-        $line->update($validated);
+        $line->update($request->validated());
 
         return redirect()
             ->route('inbound-plans.show', $inbound_plan)

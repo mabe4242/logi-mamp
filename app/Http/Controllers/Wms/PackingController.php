@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Wms;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Wms\ScanLabelRequest;
+use App\Http\Requests\Wms\SetCarrierRequest;
 use App\Models\ShipmentPlan;
 use App\Models\ShippingLog;
 use App\Models\Stock;
@@ -54,18 +56,14 @@ class PackingController extends Controller
     /**
      * 送り状スキャン（tracking_no保存）
      */
-    public function scanLabel(Request $request, ShipmentPlan $shipment_plan)
+    public function scanLabel(ScanLabelRequest $request, ShipmentPlan $shipment_plan)
     {
         if ($shipment_plan->status !== 'PACKING') {
             return back()->withErrors(['status' => '出荷作業できる状態ではありません。']);
         }
 
-        $validated = $request->validate([
-            'tracking_no' => 'required|string|max:255',
-        ]);
-
         $shipment_plan->update([
-            'tracking_no' => trim($validated['tracking_no']),
+            'tracking_no' => trim($request->validated()['tracking_no']),
         ]);
 
         return redirect()
@@ -76,18 +74,14 @@ class PackingController extends Controller
     /**
      * 運送会社設定（carrier保存）
      */
-    public function setCarrier(Request $request, ShipmentPlan $shipment_plan)
+    public function setCarrier(SetCarrierRequest $request, ShipmentPlan $shipment_plan)
     {
         if ($shipment_plan->status !== 'PACKING') {
             return back()->withErrors(['status' => '出荷作業できる状態ではありません。']);
         }
 
-        $validated = $request->validate([
-            'carrier' => 'required|string|max:50',
-        ]);
-
         $shipment_plan->update([
-            'carrier' => $validated['carrier'],
+            'carrier' => $request->validated()['carrier'],
         ]);
 
         return redirect()

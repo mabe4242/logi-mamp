@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Wms;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Wms\ScanPickingRequest;
 use App\Models\ShipmentPlan;
 use App\Models\ShipmentPlanLine;
 use App\Models\PickingLog;
@@ -51,17 +52,13 @@ class PickingController extends Controller
     /**
      * スキャン（入力）で picked_qty を +1
      */
-    public function scan(Request $request, ShipmentPlan $shipment_plan)
+    public function scan(ScanPickingRequest $request, ShipmentPlan $shipment_plan)
     {
         if ($shipment_plan->status !== 'PICKING') {
             return back()->withErrors(['status' => 'ピッキングできる状態ではありません。']);
         }
 
-        $validated = $request->validate([
-            'code' => 'required|string|max:255', // barcode or sku
-        ]);
-
-        $code = trim($validated['code']);
+        $code = trim($request->validated()['code']);
 
         $line = ShipmentPlanLine::query()
             ->where('shipment_plan_id', $shipment_plan->id)

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Wms;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Wms\StoreInboundPlanRequest;
+use App\Http\Requests\Wms\UpdateInboundPlanRequest;
 use App\Models\InboundPlan;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
@@ -53,13 +55,9 @@ class InboundPlanController extends Controller
         return view('wms.inbound_plans.create', compact('suppliers'));
     }
 
-    public function store(Request $request)
+    public function store(StoreInboundPlanRequest $request)
     {
-        $validated = $request->validate([
-            'supplier_id' => 'required|exists:suppliers,id',
-            'planned_date' => 'nullable|date',
-            'note' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         $plan = InboundPlan::create([
             'supplier_id' => $validated['supplier_id'],
@@ -89,16 +87,9 @@ class InboundPlanController extends Controller
         return view('wms.inbound_plans.edit', compact('inbound_plan', 'suppliers'));
     }
 
-    public function update(Request $request, InboundPlan $inbound_plan)
+    public function update(UpdateInboundPlanRequest $request, InboundPlan $inbound_plan)
     {
-        $validated = $request->validate([
-            'supplier_id' => 'required|exists:suppliers,id',
-            'planned_date' => 'nullable|date',
-            'note' => 'nullable|string',
-            'status' => 'required|string|max:30',
-        ]);
-
-        $inbound_plan->update($validated);
+        $inbound_plan->update($request->validated());
 
         return redirect()
             ->route('inbound-plans.show', $inbound_plan)
