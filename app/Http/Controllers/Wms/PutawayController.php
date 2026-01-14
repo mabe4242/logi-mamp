@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Wms;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Wms\StorePutawayRequest;
 use App\Models\InboundPlan;
 use App\Models\InboundPlanLine;
 use App\Models\Location;
@@ -57,17 +58,13 @@ class PutawayController extends Controller
     /**
      * 入庫実行（ 明細行 × ロケーション × 数量 ）
      */
-    public function store(Request $request, InboundPlan $inbound_plan)
+    public function store(StorePutawayRequest $request, InboundPlan $inbound_plan)
     {
         if ($inbound_plan->status !== 'WAITING_PUTAWAY') {
             return back()->withErrors(['status' => '入庫できる状態ではありません。']);
         }
 
-        $validated = $request->validate([
-            'line_id' => 'required|integer|exists:inbound_plan_lines,id',
-            'location_id' => 'required|integer|exists:locations,id',
-            'qty' => 'required|integer|min:1',
-        ]);
+        $validated = $request->validated();
 
         $line = InboundPlanLine::with('product')->findOrFail($validated['line_id']);
 

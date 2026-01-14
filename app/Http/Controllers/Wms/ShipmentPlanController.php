@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Wms;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Wms\StoreShipmentPlanRequest;
+use App\Http\Requests\Wms\UpdateShipmentPlanRequest;
 use App\Models\ShipmentPlan;
 use App\Models\Customer;
 use App\Models\Stock;
@@ -40,16 +42,10 @@ class ShipmentPlanController extends Controller
         return view('wms.shipment_plans.create', compact('customers'));
     }
 
-    public function store(Request $request)
+    public function store(StoreShipmentPlanRequest $request)
     {
-        $validated = $request->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'planned_ship_date' => 'nullable|date',
-            'note' => 'nullable|string',
-        ]);
-
         $plan = ShipmentPlan::create([
-            ...$validated,
+            ...$request->validated(),
             'status' => 'PLANNED',
             'created_by_admin_id' => auth('admin')->id(),
         ]);
@@ -73,15 +69,9 @@ class ShipmentPlanController extends Controller
         return view('wms.shipment_plans.edit', compact('shipment_plan', 'customers'));
     }
 
-    public function update(Request $request, ShipmentPlan $shipment_plan)
+    public function update(UpdateShipmentPlanRequest $request, ShipmentPlan $shipment_plan)
     {
-        $validated = $request->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'planned_ship_date' => 'nullable|date',
-            'note' => 'nullable|string',
-        ]);
-
-        $shipment_plan->update($validated);
+        $shipment_plan->update($request->validated());
 
         return redirect()->route('shipment-plans.show', $shipment_plan)->with('success', '更新しました');
     }

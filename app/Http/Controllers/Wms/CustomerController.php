@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Wms;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Wms\StoreCustomerRequest;
+use App\Http\Requests\Wms\UpdateCustomerRequest;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 
@@ -35,22 +37,9 @@ class CustomerController extends Controller
         return view('wms.customers.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreCustomerRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'code' => 'nullable|string|max:255|unique:customers,code',
-            'postal_code' => 'nullable|string|max:20',
-            'address1' => 'nullable|string|max:255',
-            'address2' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:50',
-            'email' => 'nullable|email|max:255',
-            'contact_name' => 'nullable|string|max:255',
-            'shipping_method' => 'nullable|string|max:255',
-            'note' => 'nullable|string',
-        ]);
-
-        Customer::create($validated);
+        Customer::create($request->validated());
 
         return redirect()
             ->route('customers.index')
@@ -67,22 +56,9 @@ class CustomerController extends Controller
         return view('wms.customers.edit', compact('customer'));
     }
 
-    public function update(Request $request, Customer $customer)
+    public function update(UpdateCustomerRequest $request, Customer $customer)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'code' => 'nullable|string|max:255|unique:customers,code,' . $customer->id,
-            'postal_code' => 'nullable|string|max:20',
-            'address1' => 'nullable|string|max:255',
-            'address2' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:50',
-            'email' => 'nullable|email|max:255',
-            'contact_name' => 'nullable|string|max:255',
-            'shipping_method' => 'nullable|string|max:255',
-            'note' => 'nullable|string',
-        ]);
-
-        $customer->update($validated);
+        $customer->update($request->validated());
 
         return redirect()
             ->route('customers.show', $customer)

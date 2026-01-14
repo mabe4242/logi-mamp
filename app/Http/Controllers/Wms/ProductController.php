@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Wms;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Wms\StoreProductRequest;
+use App\Http\Requests\Wms\UpdateProductRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -43,17 +45,9 @@ class ProductController extends Controller
     /**
      * 商品登録処理
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        $validated = $request->validate([
-            'sku' => 'required|string|max:255|unique:products,sku',
-            'barcode' => 'nullable|string|max:255',
-            'name' => 'required|string|max:255',
-            'unit' => 'required|string|max:50',
-            'note' => 'nullable|string',
-        ]);
-
-        Product::create($validated);
+        Product::create($request->validated());
 
         return redirect()
             ->route('products.index')
@@ -79,17 +73,9 @@ class ProductController extends Controller
     /**
      * 商品更新処理
      */
-    public function update(Request $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product)
     {
-        $validated = $request->validate([
-            'sku' => 'required|string|max:255|unique:products,sku,' . $product->id,
-            'barcode' => 'nullable|string|max:255',
-            'name' => 'required|string|max:255',
-            'unit' => 'required|string|max:50',
-            'note' => 'nullable|string',
-        ]);
-
-        $product->update($validated);
+        $product->update($request->validated());
 
         return redirect()
             ->route('products.show', $product)

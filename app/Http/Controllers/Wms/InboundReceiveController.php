@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Wms;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Wms\ScanReceivingRequest;
 use App\Models\InboundPlan;
 use App\Models\InboundPlanLine;
 use App\Models\ReceivingLog;
@@ -53,17 +54,13 @@ class InboundReceiveController extends Controller
      * 現場を想定してJANコードでもskuコードでも検品できるようにしている
      * barcode or sku を受け取って、該当明細の received_qty を +1
      */
-    public function scan(Request $request, InboundPlan $inbound_plan)
+    public function scan(ScanReceivingRequest $request, InboundPlan $inbound_plan)
     {
         if ($inbound_plan->status !== 'RECEIVING') {
             return back()->withErrors(['status' => '検品できる状態ではありません。']);
         }
 
-        $validated = $request->validate([
-            'code' => 'required|string|max:255',
-        ]);
-
-        $code = trim($validated['code']);
+        $code = trim($request->validated()['code']);
 
         // 入荷予定に紐づく商品明細を特定
         $line = InboundPlanLine::query()
