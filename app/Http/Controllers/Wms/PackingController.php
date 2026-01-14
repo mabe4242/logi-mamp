@@ -138,7 +138,7 @@ class PackingController extends Controller
                 }
 
                 // 在庫減算：まず reserved を減らしつつ、on_hand も減らす
-                // ※ ロケーション単位のピック元は未管理なので、ここではロケーション順に減らす（MVP）
+                // ※ ロケーション単位のピック元は未管理なので、ここではロケーション順に減らす
                 $remaining = $toShip;
 
                 $stocks = Stock::where('product_id', $line->product_id)
